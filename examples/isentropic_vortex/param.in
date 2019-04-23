@@ -1,0 +1,128 @@
+grid
+{
+   cell      voronoi
+}
+
+numeric
+{
+   time_mode    unsteady
+   time_scheme  ssprk3
+   time_step    0.0
+   cfl          0.4
+   max_iter     5000000
+   final_time   10.0
+   min_residue  1.0e-8
+   reconstruct  
+   {
+      method   first
+   }
+   bc_scheme    weak
+   liou_fix     no
+   sample_list
+   {
+	  groups
+	  {
+	  }
+	  free_list
+	  {
+	     4
+	  }   
+   }
+   rnd_per_sample  0
+   rnd_file_loc    rnd_nos.dat
+   rnd_file_hook   0
+}
+
+material
+{
+   gamma       1.4
+   gas_const   1
+   viscosity
+   {
+      model    constant  
+      mu_ref   0.0
+   }
+   prandtl     0.72
+   model       euler
+   flux        kepec
+   flux_par
+   {
+      alpha      0
+      beta       0
+   }
+   flux_correction   no
+   balance
+   {
+       switch_active  no
+       ND             yes
+       HEAT           yes
+       VISC           yes
+   }
+}
+
+constants
+{
+   xc    0.0
+   yc    0.0
+   gam   1.4
+   beta  5
+   alpha 0
+   M     1
+}
+
+initial_condition
+{
+   temperature  1.0 - (gam-1)*(pow(beta,2)/(8*gam*pi*pi))*exp((1-pow(x-xc,2)-pow(y-yc,2)))
+   xvelocity    M*cos(alpha*pi/180) - (beta/(2*pi))*(y-yc)*exp(0.5*(1-pow(x-xc,2)-pow(y-yc,2)))
+   yvelocity    M*sin(alpha*pi/180) + (beta/(2*pi))*(x-xc)*exp(0.5*(1-pow(x-xc,2)-pow(y-yc,2)))
+   zvelocity    0.0
+   pressure     pow(1.0 - (gam-1)*(pow(beta,2)/(8*gam*pi*pi))*exp((1-pow(x-xc,2)-pow(y-yc,2))),gam/(gam-1))
+}
+boundary
+{
+   100001
+   100002
+   100003
+   100004
+   {
+      type         periodic
+   }
+}
+exact_soln
+{
+   available    yes
+   temperature  1.0 - (gam-1)*(pow(beta,2)/(8*gam*pi*pi))*exp((1-pow(x-xc,2)-pow(y-yc,2)))
+   xvelocity    M*cos(alpha*pi/180) - (beta/(2*pi))*(y-yc)*exp(0.5*(1-pow(x-xc,2)-pow(y-yc,2)))
+   yvelocity    M*sin(alpha*pi/180) + (beta/(2*pi))*(x-xc)*exp(0.5*(1-pow(x-xc,2)-pow(y-yc,2)))
+   zvelocity    0.0
+   pressure     pow(1.0 - (gam-1)*(pow(beta,2)/(8*gam*pi*pi))*exp((1-pow(x-xc,2)-pow(y-yc,2))),gam/(gam-1))
+}
+
+integrals
+{
+}
+
+output
+{
+   format                vtk
+   frequency             100
+   time_stamps           1
+   use_online_stat_tool  no
+   variables
+   {
+      density
+   }
+   surfaces
+   {
+   }
+   pdf_points
+   {
+   }
+   restart               no
+   restart_frequency     100
+   log_output            yes
+   soln_output           yes
+   save_global           yes
+   save_mesh_Pe          no
+   find_error            yes
+}

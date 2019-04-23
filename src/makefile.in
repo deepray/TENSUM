@@ -1,0 +1,43 @@
+# Possible compilers: g++, icpc
+CXX    = g++
+MPICC  = mpic++
+MPIRUN = mpirun
+#MPICC  = /opt/.openmpi/bin/mpic++
+#MPIRUN = /opt/.openmpi/bin/mpirun
+
+
+#
+# DONT CHANGE ANYTHING BELOW
+# UNLESS YOU KNOW WHAT YOU 
+# ARE DOING !!!
+#
+
+# GNU compiler
+ifeq ($(CXX),g++)
+	CFLAGS = -O3 -Wall -Wextra
+endif
+
+# LLVM compiler
+#-ftree-vectorize -msse2 -ftree-vectorizer-verbose=5
+ifeq ($(CXX),llvm-g++)
+	CFLAGS = -O3 -Wall -Wextra
+endif
+
+# Intel compiler
+ifeq ($(CXX),icpc)
+	CFLAGS = -fast
+endif
+
+# Options needed for building shared lib
+ARCH := $(shell uname)
+
+# FLAGS for linux
+ifeq ($(ARCH),Linux)
+	LDFLAGS = -ldl
+	SHAREDFLAGS = -shared
+endif
+
+# FLAGS for Mac OSX
+ifeq ($(ARCH),Darwin)
+	SHAREDFLAGS = -dynamiclib
+endif

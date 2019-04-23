@@ -1,0 +1,133 @@
+grid
+{
+   cell   voronoi
+}
+
+numeric
+{
+   time_mode    unsteady
+   time_scheme  ssprk3
+   time_step    0.0
+   cfl          0.8
+   max_iter     5000
+   final_time   0.2
+   min_residue  8.0e-1 
+   reconstruct  
+   {  
+      method    minmod 
+   }
+   bc_scheme    weak
+   liou_fix     no
+   sample_list
+   {
+	  groups
+	  { 
+	  }
+	  free_list
+	  {
+	  }   
+   }
+   rnd_file_loc    rnd_nos.dat
+   rnd_per_sample  5
+}
+
+material
+{
+   gamma       1.4
+   gas_const   1.0
+   viscosity
+   {
+      model    constant
+      mu_ref   0
+   }
+   prandtl     1.0
+   model       euler
+   flux        kepes_tecno_roe
+   flux_par
+   {
+      alpha      0
+      beta       0
+   }
+   balance
+   {
+      switch_active  no
+      ND             yes
+      HEAT           yes
+      VISC           yes
+   }
+}
+
+constants
+{
+   xc    0.3
+   Tl    1.0 
+   Tr    0.8
+   ul    0.75
+   ur    0.0
+   pl    1.0
+   pr    0.1
+}
+
+initial_condition
+{
+   temperature  (x<xc)*Tl + (x>=xc)*Tr
+   xvelocity    (x<xc)*ul + (x>=xc)*ur
+   yvelocity    0.0
+   zvelocity    0.0
+   pressure     (x<xc)*pl + (x>=xc)*pr
+}
+
+boundary
+{
+   100001 // inlet boundary
+   {
+      type         inlet
+      temperature  Tl
+      xvelocity    ul
+      yvelocity    0.0
+      zvelocity    0.0
+      pressure     pl
+   }
+
+   100002 // outlet boundary
+   {
+      type       outlet
+   }
+
+   100003
+   100004
+   {
+      type        slip
+   }
+}
+
+exact_soln
+{
+   available    no
+}
+
+integrals
+{
+}
+
+output
+{
+   format                vtk
+   frequency             100
+   time_stamps           1
+   use_online_stat_tool  no
+   variables
+   {
+      density
+   }
+   surfaces
+   {
+   }
+   restart               yes
+   restart_frequency     100
+   log_output            yes
+   soln_output           yes
+   save_global           yes
+   save_mesh_Pe          no
+   find_error            no
+}
