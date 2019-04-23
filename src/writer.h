@@ -111,6 +111,7 @@ class Writer
       bool write_density;
       bool write_entropy;
       bool write_vorticity;
+      bool write_mesh_Peclet;
       std::ofstream master_file;
       bool write_to_master;
       std::string SAMPLE_DIR;

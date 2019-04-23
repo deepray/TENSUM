@@ -714,35 +714,35 @@ void Grid::print_cells ()
 //------------------------------------------------------------------------------
 // Print dual cells areas. Needed for external quadrature
 //------------------------------------------------------------------------------
-void Grid::print_areas ()
-{
-   
-   string file_mesh = MESH_DATA_DIR+"/area_meshp_";
-   stringstream ss;
-   ss <<get_proc_id();
-   file_mesh += ss.str() + ".dat";
-   
-   string commandline = "rm -rf " + file_mesh;
-   system(commandline.c_str());
-   
-   mpi_barrier(run_comm);
-   
-   if(get_proc_id() == 0)
-   {
-      cout << "  --- writing mesh area (dual) into "<<MESH_DATA_DIR<<"/area_meshp_*.dat ...\n";
-   }   
-
-   ofstream meshlist(file_mesh.c_str());
-   
-   meshlist<<n_vertex<<endl;
-   for(unsigned int i=0; i<n_vertex; ++i)
-   {
-      double nbs = mpi_node_share.find(i)->second;
-      meshlist << setprecision(15) << dcarea[i]<< " "<<nbs<<"\n";
-   }
-
-   meshlist.close();
-}
+// void Grid::print_areas ()
+// {
+//    
+//    string file_mesh = MESH_DATA_DIR+"/area_meshp_";
+//    stringstream ss;
+//    ss <<get_proc_id();
+//    file_mesh += ss.str() + ".dat";
+//    
+//    string commandline = "rm -rf " + file_mesh;
+//    system(commandline.c_str());
+//    
+//    mpi_barrier(run_comm);
+//    
+//    if(get_proc_id() == 0)
+//    {
+//       cout << "  --- writing mesh area (dual) into "<<MESH_DATA_DIR<<"/area_meshp_*.dat ...\n";
+//    }   
+// 
+//    ofstream meshlist(file_mesh.c_str());
+//    
+//    meshlist<<n_vertex<<endl;
+//    for(unsigned int i=0; i<n_vertex; ++i)
+//    {
+//       double nbs = mpi_node_share.find(i)->second;
+//       meshlist << setprecision(15) << dcarea[i]<< " "<<nbs<<"\n";
+//    }
+// 
+//    meshlist.close();
+// }
 
 //------------------------------------------------------------------------------
 // Radius for axisymmetric case.
@@ -793,7 +793,16 @@ void Grid::compute_dx_max ()
      double len = dr.norm();
      dx_max[v0] = max(dx_max[v0],len);
      dx_max[v1] = max(dx_max[v1],len);
+     // if(get_proc_id() == 0)
+//         cout<<dx_max[v0]<<" "<<dx_max[v1]<<endl;
    }  
+   
+   if(PERIODIC)
+   {
+      MPI_DISP("  --- reducing dx_max at periodic nodes ...",verbose);
+      reduce_dx_max();
+   }   
+   mpi_barrier(MPI_COMM_WORLD);
 }
 
 //------------------------------------------------------------------------------
@@ -845,6 +854,17 @@ void Grid::remove_ghosts ()
    }
    MPI_LOC_ASSERT(mcarea.size()==n_vertex_active);
    MPI_LOC_ASSERT(dcarea.size()==n_vertex_active);
+   
+   // Deleting dx_max corresponding to ghost nodes:
+   vector<double>::iterator itdx = dx_max.begin();
+   for(unsigned int i = 0 ;i<n_vertex; ++i)
+   {
+      if(vertex[i].active) 
+	  	  itdx++;   
+      else
+          dx_max.erase(itdx);         
+   }
+   MPI_LOC_ASSERT(dx_max.size()==n_vertex_active);
    
    // Changing local vertex indexing in l2g and g2l
    map<int,int>::iterator itl = g2l.begin();
@@ -1131,6 +1151,7 @@ void Grid::preproc (const std::map<int,BoundaryCondition>& bc)
    compute_face_centroid ();
    compute_cell_centroid ();
    compute_cell_area ();
+   compute_dx_max();
    compute_face_normal_and_area ();
    if(cell_type == voronoi)
       remove_empty_faces ();
@@ -1148,11 +1169,10 @@ void Grid::preproc (const std::map<int,BoundaryCondition>& bc)
       if(get_proc_id() < NPART)
       {
          print_cells();
-         print_areas();
+      //   print_areas();
       }   
    }      
    mark_cell_bface(bc);
-   compute_dx_max();
    compute_radius ();
    if(PERIODIC)
       create_periodic_weights ();

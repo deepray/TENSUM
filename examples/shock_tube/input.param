@@ -9,7 +9,7 @@ partition_dir_loc = .
 solver_param_file = param.in
 
 # Flags for main operations
-gen_mesh_and_part = no
+gen_mesh_and_part = yes
 initiate_solver   = yes
 
 # Flags for solver

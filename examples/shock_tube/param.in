@@ -8,10 +8,10 @@ numeric
    time_mode    unsteady
    time_scheme  ssprk3
    time_step    0.0
-   cfl          0.8
+   cfl          0.5
    max_iter     5000
    final_time   0.2
-   min_residue  8.0e-1 
+   min_residue  0.0 
    reconstruct  
    {  
       method    minmod 
@@ -38,10 +38,10 @@ material
    viscosity
    {
       model    constant
-      mu_ref   0
+      mu_ref   2.0e-4
    }
    prandtl     1.0
-   model       euler
+   model       ns
    flux        kepes_tecno_roe
    flux_par
    {
@@ -51,7 +51,7 @@ material
    balance
    {
       switch_active  no
-      ND             yes
+      ND             no
       HEAT           yes
       VISC           yes
    }
@@ -59,10 +59,10 @@ material
 
 constants
 {
-   xc    0.3
+   xc    0.5
    Tl    1.0 
    Tr    0.8
-   ul    0.75
+   ul    0.0
    ur    0.0
    pl    1.0
    pr    0.1
@@ -97,7 +97,7 @@ boundary
    100003
    100004
    {
-      type        slip
+      type        periodic
    }
 }
 
@@ -119,6 +119,7 @@ output
    variables
    {
       density
+      mesh_Peclet
    }
    surfaces
    {
@@ -128,6 +129,5 @@ output
    log_output            yes
    soln_output           yes
    save_global           yes
-   save_mesh_Pe          no
    find_error            no
 }

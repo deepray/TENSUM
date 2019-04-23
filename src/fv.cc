@@ -1974,6 +1974,7 @@ void FiniteVolume::output (const unsigned int iter, bool write_variables)
    Writer writer (grid, param.material, param.write_format, param.write_surfaces, 
                   elapsed_time, SAMPLE_DIR);
    writer.attach_data (primitive);
+   writer.attach_data (grid.dcarea,"dual_area");
    writer.attach_gradient (dE);
    if(param.write_variables.size() > 0 && write_variables == true)
       writer.attach_variables (param.write_variables);
@@ -1982,8 +1983,8 @@ void FiniteVolume::output (const unsigned int iter, bool write_variables)
    writer.output (get_proc_loc_id(),counter, elapsed_time);
    output_surface_sf(SAMPLE_DIR);
    output_surface_hf(SAMPLE_DIR);
-   if(param.save_mesh_Pe)
-      output_mesh_Pe(SAMPLE_DIR);
+   // if(param.save_mesh_Pe)
+//       output_mesh_Pe(SAMPLE_DIR);
    if(param.time_mode == "unsteady") 
       ++counter;
    else
@@ -2021,6 +2022,7 @@ void FiniteVolume::output_mean()
    
    Writer writer (grid, param.write_format, MEAN_DIR);
    writer.attach_data (primitive_fm[mc_t_ind]);
+   writer.attach_data (grid.dcarea,"dual_area");
    if(has_density)
       writer.attach_data (density_fm[mc_t_ind],"density");
    if(has_mach)
@@ -2044,6 +2046,7 @@ void FiniteVolume::output_sec_mom()
    
    Writer writer (grid, param.write_format, SEC_MOM_DIR);
    writer.attach_data (primitive_sm[mc_t_ind]);
+   writer.attach_data (grid.dcarea,"dual_area");
    if(has_density)
       writer.attach_data (density_sm[mc_t_ind],"density");
    if(has_mach)
@@ -2067,6 +2070,7 @@ void FiniteVolume::output_var()
    
    Writer writer (grid, param.write_format, VAR_DIR);
    writer.attach_data (primitive_variance[mc_t_ind]);
+   writer.attach_data (grid.dcarea,"dual_area");
    if(has_density)
       writer.attach_data (density_variance[mc_t_ind],"density");
    if(has_mach)

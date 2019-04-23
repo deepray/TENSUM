@@ -692,8 +692,14 @@ void Parameter::read_output (Reader &fin)
    while (!fin.eos())
    {
       fin >> input;
-      MPI_ASSERT (input=="mach" || input=="density" || input=="entropy" || input=="vorticity");
+      MPI_ASSERT (input=="mach" || input=="density" || input=="entropy" || 
+                  input=="vorticity" || "mesh_Peclet");
       write_variables.push_back (input);
+      
+      if(input=="mesh_Peclet") // Only allowed for Navier-Stokes with non-zero viscosity
+      {
+         MPI_ASSERT(material.model == Material::ns && material.mu_ref > 0.0);
+      }
    }
 
    fin.begin_section ("surfaces");
@@ -766,18 +772,18 @@ void Parameter::read_output (Reader &fin)
               << "Possible options:\n"
 			  << " yes \n no \n");
       
-   fin.entry ("save_mesh_Pe");
-   fin >> input;
-   if(input=="no")
-      save_mesh_Pe= false;
-   else if(input=="yes")
-   {
-      save_mesh_Pe= true;
-   }
-   else
-      MPI_ERR("reader_output:: unknown option "<<input<<" for save_mesh_Pe. "
-              << "Possible options:\n"
-			  << " yes \n no \n");  
+   // fin.entry ("save_mesh_Pe");
+//    fin >> input;
+//    if(input=="no")
+//       save_mesh_Pe= false;
+//    else if(input=="yes")
+//    {
+//       save_mesh_Pe= true;
+//    }
+//    else
+//       MPI_ERR("reader_output:: unknown option "<<input<<" for save_mesh_Pe. "
+//               << "Possible options:\n"
+// 			  << " yes \n no \n");  
       
    fin.entry ("find_error");
    fin >> input;

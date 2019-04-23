@@ -48,7 +48,9 @@ void Writer::attach_variables (const vector<string>& variables)
       else if(variables[i]=="entropy")
          write_entropy = true;
       else if(variables[i]=="vorticity")
-         write_vorticity = true;   
+         write_vorticity = true; 
+      else if(variables[i]=="mesh_Peclet")
+         write_mesh_Peclet = true;      
       else
          MPI_LOC_ERR("Writer: unknown variable " << variables[i]);
 }
@@ -245,6 +247,23 @@ void Writer::output_vtk (string filename)
 							(*dE)[i][2].x + (*vertex_primitive)[i].velocity.y*(*dE)[i][4].x
 							- (*dE)[i][1].y - (*vertex_primitive)[i].velocity.x*(*dE)[i][4].y);
 		 vtk <<setprecision(12) << vorticity << endl;	 
+      }
+   }
+   
+   // write mesh Peclet number
+   if(write_mesh_Peclet)
+   {
+      // Check if gradient information is available
+      MPI_LOC_ASSERT(has_gradient);
+      vtk << "SCALARS mesh_Peclet double 1" << endl;
+      vtk << "LOOKUP_TABLE default" << endl;
+      for(unsigned int i=0; i<grid->n_vertex; ++i)
+      {
+         double Peclet = grid->dx_max[i]*material->Density ((*vertex_primitive)[i])*
+                               (*vertex_primitive)[i].velocity.norm()/
+                                material->viscosity((*vertex_primitive)[i].temperature);					
+							
+		 vtk <<setprecision(12) << Peclet << endl;	 
       }
    }
 

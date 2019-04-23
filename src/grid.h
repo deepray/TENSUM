@@ -274,6 +274,11 @@ class Grid
       void reduce_dual_area ();
       
       /*!
+	  * Reduce dual cell areas at periodic points
+	  */
+      void reduce_dx_max ();
+      
+      /*!
 	  * Finds face normals
 	  */
       void compute_face_normal_and_area ();

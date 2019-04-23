@@ -130,8 +130,8 @@ class Parameter
       bool write_soln;                           /*!< If true, solution files are written */
       bool has_global;                           /*!< If true, global quantities are evaluated
                                                       and saved */
-      bool save_mesh_Pe;                         /*!< If true, then mesh Peclet number is evaluated 
-      												  and saved */  
+      // bool save_mesh_Pe;                         /*!< If true, then mesh Peclet number is evaluated 
+//       												  and saved */  
       bool find_error;                            /*!< If true, then the Lp norms of the errors (provided 
       													the exact solution is available) */  												                                                
 
