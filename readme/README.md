@@ -9,6 +9,8 @@
 2. ["An entropy stable finite volume scheme for the two dimensional Navier–Stokes equations on triangular grids"](http://www.sciencedirect.com/science/article/pii/S009630031730471X), by D. Ray, P. Chandrashekar; Applied Mathematics and Computation, Vol. 314, pp. 257-286 (2017).
 3. ["Entropy-stable finite difference and finite volume schemes for compressible flows"](http://deepray.github.io/thesis.pdf), doctoral thesis by D. Ray, 2017.
 
+**NOTE:** If the math symbols do not display properly in README.md. have a look at README.pdf instead.
+
 ## <a name="TOC"></a>Table of contents
 <ul>
 <li><a href="#compiling">Compiling the code</a></li>
@@ -101,7 +103,7 @@ The unstructured meshes are generated using [Gmsh](http://gmsh.info/), which is 
 
 <center>
 <figure>
-<img src="IMGS/primary_colored.pdf">
+<img src="primary_colored.pdf">
 <figcaption>Fig. 1: Paritioned NACA-0012 mesh</figcaption>
 </figure>
 </center>
@@ -145,7 +147,7 @@ In the above partition file
 * `<num_loc_nodes>` is the number of vertices in the parition (including ghost vertices), while `<num_total_nodes>` is the total number of vertices in the full mesh.
 * Assuming a global numbering of all vertices in the full mesh (starting from 0), the following data is available for each vertex associated with a partition:
  * `<g_id>` is the global index of the vertex
- * `<x_coord>`, `<y_coord>` and `<z_coord>` is the $$(x,y,z)$$ spatial coordinates of the vertex
+ * `<x_coord>`, `<y_coord>` and `<z_coord>` is the (x,y,z) spatial coordinates of the vertex
  * `<num_shared>` is the number of mesh partitions in which the given vertex is active.
  * `<shared_id>` is the list of indices of all paritions (including the current one) **actively** sharing the given vertex.
  * `<on_boundary>` is set to 1 if the vertex is on the domain boundary. Else it is set to 0.
