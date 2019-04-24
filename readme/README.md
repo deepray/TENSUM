@@ -1,6 +1,9 @@
 # TENSUM: <span style="color:red">T</span>wo-dimensional <span style="color:red">en</span>tropy <span style="color:red">s</span>table <span style="color:red">u</span>nstructred <span style="color:red">m</span>esh solver</span>
+
 ###Created by: Deep Ray, TIFR-CAM, Bangalore 
+
 ###Webpage: deepray.github.io 
+
 ###Date : 30 October, 2015
 
 **TENSUM** is a parallelized finite volume solver for compressible flows on unstructured triangular grids. It is based on the [TAXIS](https://github.com/cpraveen/taxis) solver developed by [Praveen Chandrashekar](http://cpraveen.github.io/). Details about the discretiziation and implementation of the various numerical schemes can be found in
