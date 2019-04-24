@@ -6,4 +6,7 @@ src/tensum
 examples/**/MESH_DATA/
 examples/**/PARTITION/
 examples/**/SAMPLE_*/
+examples/**/MEAN_*/
+examples/**/VARIANCE_*/
+examples/**/SECOND_MOMENT_*/
 examples/**/mesh_part_info.dat

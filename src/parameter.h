@@ -87,7 +87,8 @@ class Parameter
       std::string  write_format;                 /*!< Options: vtk (currently the only 
        												  format available */
       unsigned int write_frequency;              /*!< Number of iterations after which
-                                                      a solution file is saved */
+                                                      a solution file is saved (only used for
+                                                      steady simulations */
       unsigned int restart_write_frequency;      /*!< Number of iterations after which
                                                       a restart solution file is saved */
                                                       

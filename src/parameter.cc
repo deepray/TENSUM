@@ -675,7 +675,7 @@ void Parameter::read_output (Reader &fin)
    
    fin.entry ("time_stamps");
    fin >> n_time_stamps;
-   MPI_ASSERT (n_time_stamps >= 0);
+   MPI_ASSERT (n_time_stamps > 0);
    
    fin.entry ("use_online_stat_tool");
    fin >> input;
@@ -696,10 +696,10 @@ void Parameter::read_output (Reader &fin)
                   input=="vorticity" || "mesh_Peclet");
       write_variables.push_back (input);
       
-      if(input=="mesh_Peclet") // Only allowed for Navier-Stokes with non-zero viscosity
-      {
-         MPI_ASSERT(material.model == Material::ns && material.mu_ref > 0.0);
-      }
+      // Only allowed for Navier-Stokes with non-zero viscosity
+      if(input=="mesh_Peclet" && !(material.model == Material::ns && material.mu_ref > 0.0)) 
+         MPI_ERR("reader_output: mesh_Peclet output variable can only be requested "
+                  <<"for Navier-Stokes model with mu_ref > 0");
    }
 
    fin.begin_section ("surfaces");
@@ -799,13 +799,16 @@ void Parameter::read_output (Reader &fin)
 			  << " yes \n no \n");      
 
    fin.end_section ();
-      
-   if(time_mode == "unsteady" && n_samples > 1 && n_time_stamps == 0)
-      MPI_ERR("reader_output:: time_stamps must be greater than 0 for unsteady MC "
-              << " simulations.");   
-       
+   
    if(n_samples == 1 && online_stat == true)
       MPI_ERR("reader_output:: online statistics cannot be evaluated with only one sample.");
+      
+   if(write_restart && online_stat == true)
+      MPI_ERR("reader_output:: restart facility currently unavailable with online statistics.");   
+      
+   // if(time_mode == "unsteady" && online_stat == true && n_time_stamps == 0)
+//       MPI_ERR("reader_output:: time_stamps must be greater than 0 if online statistics "
+//               << " are to be evaluated for unsteady simulations.");   
    
    if(find_error && !exact_available)
    {

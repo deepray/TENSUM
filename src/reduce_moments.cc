@@ -19,7 +19,7 @@ void FiniteVolume::reduce_moments()
 	unsigned int NPROC = get_comm_size();
 	unsigned int nvars = NVAR + param.write_variables.size();
 	int tag;
-	for(unsigned int t=0; t<mc_time.size(); ++t)
+	for(unsigned int t=0; t<time_instance.size(); ++t)
     {
 	   if(rank < NPART)
 	   {
@@ -36,13 +36,13 @@ void FiniteVolume::reduce_moments()
 			  double fact1 = double(n_other)/(double)n_new;
 			  double fact2 = fact1*n_old;
 		   
-	          tag = i + (t+mc_time.size())*NPROC;
+	          tag = i + (t+time_instance.size())*NPROC;
 			  MPI_Recv(&DIFF, grid.n_vertex*nvars, MPI_DOUBLE, i, tag,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
 	
-              tag = i + (t+2*mc_time.size())*NPROC;
+              tag = i + (t+2*time_instance.size())*NPROC;
 			  MPI_Recv(&RBUF, grid.n_vertex*nvars, MPI_DOUBLE, i, tag,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
 			  
-			  tag = i + (t+3*mc_time.size())*NPROC;
+			  tag = i + (t+3*time_instance.size())*NPROC;
 			  MPI_Recv(&RBUF2, grid.n_vertex*nvars, MPI_DOUBLE, i, tag,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
 			  for(unsigned int j=0; j<grid.n_vertex; ++j)
 			  {
@@ -169,7 +169,7 @@ void FiniteVolume::reduce_moments()
 		   
 		   }
 		   
-		   tag = rank + (t+mc_time.size())*NPROC;
+		   tag = rank + (t+time_instance.size())*NPROC;
 		   MPI_Ssend(&SBUF, grid.n_vertex*nvars, MPI_DOUBLE, destination_proc_id,tag,MPI_COMM_WORLD);
 		   
 		   for(unsigned int i=0; i<grid.n_vertex; ++i)
@@ -190,7 +190,7 @@ void FiniteVolume::reduce_moments()
 				 SBUF[++ind] = vorticity_variance[t][i];      
 		   }
 		   
-		   tag = rank + (t+2*mc_time.size())*NPROC;
+		   tag = rank + (t+2*time_instance.size())*NPROC;
 		   MPI_Ssend(&SBUF, grid.n_vertex*nvars, MPI_DOUBLE, destination_proc_id, tag,MPI_COMM_WORLD);
 		   
 		   for(unsigned int i=0; i<grid.n_vertex; ++i)
@@ -211,7 +211,7 @@ void FiniteVolume::reduce_moments()
 				 SBUF[++ind] = vorticity_sm[t][i];      
 		   }
 		   
-		   tag = rank + (t+3*mc_time.size())*NPROC;
+		   tag = rank + (t+3*time_instance.size())*NPROC;
 		   MPI_Ssend(&SBUF, grid.n_vertex*nvars, MPI_DOUBLE, destination_proc_id, tag,MPI_COMM_WORLD);
 	   }	
     }

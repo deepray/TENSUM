@@ -12,6 +12,7 @@
 #include "timer.h"
 
 extern bool preprocess;
+extern bool restart;
 
 //------------------------------------------------------------------------------
 //! Finite Volume class 
@@ -33,6 +34,8 @@ class FiniteVolume
          param.part_dir = loc;
          param.part_dir += "/PARTITION";
          param.read ();
+         if(restart && param.online_stat)
+             MPI_ERR("error in input.param: restart facility currently unavailable with online statistics.")
           
          if(param.online_stat && !preprocess)
          {
@@ -41,7 +44,7 @@ class FiniteVolume
 			 SEC_MOM_DIR = "SECOND_MOMENT_ONLINE";
 			 VAR_DIR     = "VARIANCE_ONLINE";
 // 			 PDF_DIR     = "PDF_ONLINE";
-			 L1_DIR      = "STAT_L1_ONLINE";
+// 			 L1_DIR      = "STAT_L1_ONLINE";
 			 
 			 for(unsigned int i=0; i<param.write_variables.size(); ++i)
                 if(param.write_variables[i]=="mach")
@@ -102,7 +105,7 @@ class FiniteVolume
 			 write_to_master_var = true;
 		 }
 		 mpi_barrier(MPI_COMM_WORLD);
-		 mc_time_reached = false;
+		 time_instance_reached = false;
          
       };
       ~FiniteVolume () 
@@ -169,8 +172,8 @@ class FiniteVolume
       unsigned int         last_iter;           /*!<this corresponds to the last iteration 
                                                     in the restart file. If no restart file 
                                                     is used, then it is set to 0*/
-      bool                 save_by_frequency;    /*!<if this is true, then the solution files
-      												are saved based on write_frequency*/
+      // bool                 save_by_frequency;    /*!<if this is true, then the solution files
+//       												are saved based on write_frequency*/
       bool                 write_to_master;     /*!<data is written to solution master file
             										only if this is true. This ensures that
             										the master file data is compatible with
@@ -330,13 +333,12 @@ class FiniteVolume
       std::vector<double> vor_mean_l1;     /*!< l1 norm of mean of vorticity*/
       std::vector<double> vor_var_l1; 	   /*!< l1 norm of variance of density*/												 
       
-      std::vector<double>  mc_time;  /*!<Vector of times at which soln/statistics are evaluated.
-      									 This is set based on the type of flow and 
-      									 Parameter.n_time_stamps */
-      unsigned int  mc_t_ind;        /*!<This varies from 0 to total time frame - 1. When 
-      									 a sample run is finished, this is reset to 0*/
-      bool mc_time_reached;          /*!<Indicates if a time frame of soln/statistical evaluation
-      									 has been reached for unsteady flows*/
+      std::vector<double>  time_instance;  /*!<Vector of times at which soln/statistics are evaluated.
+      									       This is useful only for unsteady flows.  */
+//       unsigned int  time_instance_ind;        /*!<This varies from 0 to total time frame - 1.
+//        					                          When a sample run is finished, this is reset to 0*/
+      bool time_instance_reached;            /*!<Indicates if a time frame of soln/statistical evaluation
+      									         has been reached for unsteady flows.*/
       
       // Errors when exact solution evailable									 
       PrimVar prim_exact,prim_abs_err, prim_err_L1, prim_err_L2,prim_err_Linf;

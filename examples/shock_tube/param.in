@@ -22,6 +22,7 @@ numeric
    {
 	  groups
 	  { 
+	     1 5
 	  }
 	  free_list
 	  {
@@ -38,7 +39,7 @@ material
    viscosity
    {
       model    constant
-      mu_ref   2.0e-4
+      mu_ref   0
    }
    prandtl     1.0
    model       ns
@@ -114,17 +115,15 @@ output
 {
    format                vtk
    frequency             100
-   time_stamps           1
-   use_online_stat_tool  no
+   time_stamps           2
+   use_online_stat_tool  yes
    variables
    {
-      density
-      mesh_Peclet
    }
    surfaces
    {
    }
-   restart               yes
+   restart               no
    restart_frequency     100
    log_output            yes
    soln_output           yes

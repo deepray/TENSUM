@@ -28,7 +28,7 @@ if(!(__condition__)){\
 #define MPI_ERR(__message__) \
 {std::stringstream ss; \
 ss <<__message__; \
-if(get_proc_id() == 0){std::cout<<ss.str().c_str()<<std::endl;}\
+if(get_proc_id() == 0){std::cout<<"ERROR --> "<<ss.str().c_str()<<std::endl;}\
 MPI_Barrier(MPI_COMM_WORLD); \
 MPI_Finalize(); \
 exit(0);};
@@ -36,7 +36,7 @@ exit(0);};
 #define MPI_LOC_ERR(__message__) \
 {std::stringstream ss; \
 ss <<__message__; \
-std::cout<<ss.str().c_str()<<std::endl;\
+std::cout<<"ERROR --> "<<ss.str().c_str()<<std::endl;\
 MPI_Abort(MPI_COMM_WORLD,1);};
 
 #define MPI_DISP(__message__,__status__) \

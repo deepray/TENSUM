@@ -9,8 +9,8 @@
 
 
 extern Dimension dim;
-extern bool restart;
-extern bool preprocess;
+//extern bool restart;
+//extern bool preprocess;
 extern bool bounds;
 extern bool verbose;
 extern std::vector<double> rnd_nos;
@@ -47,22 +47,22 @@ void FiniteVolume::initialize ()
    
    dE0.resize(NVAR);
    
+   //save_by_frequency = true;
    // Create time checkpoints to save variables
-   if(param.time_mode == "unsteady" && param.n_time_stamps > 0)
+   if(param.time_mode == "unsteady")
    {
-	   save_by_frequency = false;
-	   mc_time.resize(param.n_time_stamps+1);
-	   double mc_dt = param.final_time/(param.n_time_stamps);
-	   for(unsigned int i =0; i<mc_time.size(); ++i)
+	   //save_by_frequency = false;
+	   time_instance.resize(param.n_time_stamps+1);
+	   double time_instance_dt = param.final_time/(param.n_time_stamps);
+	   for(unsigned int i =0; i<time_instance.size(); ++i)
 	   {
-		  mc_time[i] = i*mc_dt;
+		  time_instance[i] = i*time_instance_dt;
 	   }
    }   
    else
    {   
-	   save_by_frequency = true;
-	   mc_time.resize(2);
-	   mc_time[0] = 0.0;
+	   time_instance.resize(2);
+	   time_instance[0] = 0.0;
    }
    
    
@@ -74,34 +74,34 @@ void FiniteVolume::initialize ()
    // Initializing MC variables
    if(param.online_stat)
    {
-      primitive_fm.resize (mc_time.size());
-      primitive_sm.resize (mc_time.size());
-      primitive_variance.resize (mc_time.size());
+      primitive_fm.resize (time_instance.size());
+      primitive_sm.resize (time_instance.size());
+      primitive_variance.resize (time_instance.size());
       if(has_density)
       {
-         density_fm.resize (mc_time.size());
-         density_sm.resize (mc_time.size());
-         density_variance.resize (mc_time.size());
+         density_fm.resize (time_instance.size());
+         density_sm.resize (time_instance.size());
+         density_variance.resize (time_instance.size());
       }
       if(has_mach)
       {
-         mach_fm.resize (mc_time.size());
-         mach_sm.resize (mc_time.size());
-         mach_variance.resize (mc_time.size());
+         mach_fm.resize (time_instance.size());
+         mach_sm.resize (time_instance.size());
+         mach_variance.resize (time_instance.size());
       }
       if(has_vorticity)
       {
-         vorticity_fm.resize (mc_time.size());
-         vorticity_sm.resize (mc_time.size());
-         vorticity_variance.resize (mc_time.size());
+         vorticity_fm.resize (time_instance.size());
+         vorticity_sm.resize (time_instance.size());
+         vorticity_variance.resize (time_instance.size());
       }
       if(has_entropy)
       {
-         entropy_fm.resize (mc_time.size());
-         entropy_sm.resize (mc_time.size());
-         entropy_variance.resize (mc_time.size());
+         entropy_fm.resize (time_instance.size());
+         entropy_sm.resize (time_instance.size());
+         entropy_variance.resize (time_instance.size());
       }   
-	  for(unsigned int i =0; i<mc_time.size(); ++i)
+	  for(unsigned int i =0; i<time_instance.size(); ++i)
 	  {
 		 primitive_fm[i].resize (grid.n_vertex);
 		 primitive_sm[i].resize (grid.n_vertex);
@@ -132,8 +132,9 @@ void FiniteVolume::initialize ()
 		 }
 	  }
    
-	  for(unsigned int i =0; i<mc_time.size(); ++i)
+	  for(unsigned int i =0; i<time_instance.size(); ++i)
 	  {
+		    
 		 for(unsigned int j=0; j<grid.n_vertex; ++j)
 		 { 
 			primitive_fm[i][j] = 0;
@@ -166,32 +167,33 @@ void FiniteVolume::initialize ()
 		 }
 	  }  
 	  
-	  prim_mean_l1.resize(mc_time.size());
-	  prim_var_l1.resize(mc_time.size());	
+	  prim_mean_l1.resize(time_instance.size());
+	  prim_var_l1.resize(time_instance.size());	
    
 	  if(has_density)
 	  {
-		  den_mean_l1.resize(mc_time.size(),0);
-		  den_var_l1.resize(mc_time.size(),0);	
+		  den_mean_l1.resize(time_instance.size(),0);
+		  den_var_l1.resize(time_instance.size(),0);	
 	  }	   
 	  if(has_mach)
 	  {
-		  mach_mean_l1.resize(mc_time.size(),0);
-		  mach_var_l1.resize(mc_time.size(),0);	
+		  mach_mean_l1.resize(time_instance.size(),0);
+		  mach_var_l1.resize(time_instance.size(),0);	
 	  }
 	  if(has_entropy)
 	  {
-		  ent_mean_l1.resize(mc_time.size(),0);
-		  ent_var_l1.resize(mc_time.size(),0);	
+		  ent_mean_l1.resize(time_instance.size(),0);
+		  ent_var_l1.resize(time_instance.size(),0);	
 	  }
 	  if(has_vorticity)
 	  {
-		  vor_mean_l1.resize(mc_time.size(),0);
-		  vor_var_l1.resize(mc_time.size(),0);	
+		  vor_mean_l1.resize(time_instance.size(),0);
+		  vor_var_l1.resize(time_instance.size(),0);	
 	  }
    }	   
    
    t_init.add_time();
+    
 
 }
 
@@ -566,6 +568,7 @@ void FiniteVolume::end_sample_run()
 	   if(bound_file.is_open())
 	      bound_file.close();	  
    } 
+
    write_sample_time_output();  
    t_sample_init.reset();
    t_sample_solve.reset();
@@ -592,91 +595,96 @@ void FiniteVolume::end_sample_run()
 void FiniteVolume::increment_moments(const int sample_id)
 {  
    t_mom_inc.start_time();
+
+   
    // Adding moments
    for(unsigned int i=0; i<grid.n_vertex; ++i)
    {
+
       if(sample_id == param.sample_start_ind)
       {
-         primitive_fm[mc_t_ind][i] = primitive[i];
-         primitive_sm[mc_t_ind][i].cdot(primitive[i],primitive[i]);
-         primitive_variance[mc_t_ind][i] = 0.0;
+
+         primitive_fm[counter][i] = primitive[i];
+         primitive_sm[counter][i].cdot(primitive[i],primitive[i]);
+         primitive_variance[counter][i] = 0.0;
          if(has_density)
 		 {
 			double val = param.material.Density(primitive[i]);
-			density_fm[mc_t_ind][i]   = val;
-			density_sm[mc_t_ind][i] = val*val;
-			density_variance[mc_t_ind][i]  = 0.0;
+			density_fm[counter][i]   = val;
+			density_sm[counter][i] = val*val;
+			density_variance[counter][i]  = 0.0;
 		 }
 		 if(has_mach)
 		 {
 			double val = param.material.Mach(primitive[i]);
-			mach_fm[mc_t_ind][i]   = val;
-			mach_sm[mc_t_ind][i] = val*val;
-			mach_variance[mc_t_ind][i]   = 0;
+			mach_fm[counter][i]   = val;
+			mach_sm[counter][i] = val*val;
+			mach_variance[counter][i]   = 0;
 		 }
 		 if(has_vorticity)
 		 {
 			double val = param.material.Vorticity(primitive[i],dE[i]);
-			vorticity_fm[mc_t_ind][i]   = val;
-			vorticity_sm[mc_t_ind][i] = val*val;
-			vorticity_variance[mc_t_ind][i]   = 0;
+			vorticity_fm[counter][i]   = val;
+			vorticity_sm[counter][i] = val*val;
+			vorticity_variance[counter][i]   = 0;
 		 }
 		 if(has_entropy)
 		 {
 			double val = param.material.Entropy(primitive[i]);
-			entropy_fm[mc_t_ind][i]   = val;
-			entropy_sm[mc_t_ind][i] = val*val;
-			entropy_variance[mc_t_ind][i]   = 0;
+			entropy_fm[counter][i]   = val;
+			entropy_sm[counter][i] = val*val;
+			entropy_variance[counter][i]   = 0;
 		 }
+		 
       }
       else
       {
          PrimVar Mk, Mkm1, dummy1, dummy2;
          double sMk, sMkm1, val;
          double k = sample_id-param.sample_start_ind+1;
-         Mkm1 = primitive_fm[mc_t_ind][i];
+         Mkm1 = primitive_fm[counter][i];
     	 Mk.equ(primitive[i],Mkm1,1.0/k,(k-1.0)/k);
-    	 primitive_fm[mc_t_ind][i] = Mk;  
+    	 primitive_fm[counter][i] = Mk;  
     	 dummy1.equ(primitive[i],Mkm1,1.0,-1.0);
     	 dummy2.equ(primitive[i],Mk,1.0,-1.0);
-    	 primitive_sm[mc_t_ind][i].addcdot(primitive[i],primitive[i]);
-	     primitive_variance[mc_t_ind][i].addcdot(dummy1,dummy2);
+    	 primitive_sm[counter][i].addcdot(primitive[i],primitive[i]);
+	     primitive_variance[counter][i].addcdot(dummy1,dummy2);
 	     
 	     if(has_density)
 	     {
 	        val =  param.material.Density(primitive[i]);
-	        sMkm1 = density_fm[mc_t_ind][i];
+	        sMkm1 = density_fm[counter][i];
 			sMk   = sMkm1 + (val - sMkm1)/k;
-            density_fm[mc_t_ind][i] = sMk;
-            density_sm[mc_t_ind][i]+=val*val;  
-			density_variance[mc_t_ind][i] += (val - sMkm1)*(val - sMk);
+            density_fm[counter][i] = sMk;
+            density_sm[counter][i]+=val*val;  
+			density_variance[counter][i] += (val - sMkm1)*(val - sMk);
 	     }
 	     if(has_mach)
 	     {
 	        val =  param.material.Mach(primitive[i]);
-	        sMkm1 = mach_fm[mc_t_ind][i];
+	        sMkm1 = mach_fm[counter][i];
 			sMk   = sMkm1 + (val - sMkm1)/k;
-            mach_fm[mc_t_ind][i] = sMk;  
-            mach_sm[mc_t_ind][i]+=val*val;
-			mach_variance[mc_t_ind][i] += (val - sMkm1)*(val - sMk);
+            mach_fm[counter][i] = sMk;  
+            mach_sm[counter][i]+=val*val;
+			mach_variance[counter][i] += (val - sMkm1)*(val - sMk);
 	     }
 	     if(has_vorticity)
 	     {
 	        val =  param.material.Vorticity(primitive[i],dE[i]);
-	        sMkm1 = vorticity_fm[mc_t_ind][i];
+	        sMkm1 = vorticity_fm[counter][i];
 			sMk   = sMkm1 + (val - sMkm1)/k;
-            vorticity_fm[mc_t_ind][i] = sMk;  
-            vorticity_sm[mc_t_ind][i]+=val*val;
-			vorticity_variance[mc_t_ind][i] += (val - sMkm1)*(val - sMk);
+            vorticity_fm[counter][i] = sMk;  
+            vorticity_sm[counter][i]+=val*val;
+			vorticity_variance[counter][i] += (val - sMkm1)*(val - sMk);
 	     }
 	     if(has_entropy)
 	     {
 	        val =  param.material.Entropy(primitive[i]);
-	        sMkm1 = entropy_fm[mc_t_ind][i];
+	        sMkm1 = entropy_fm[counter][i];
 			sMk   = sMkm1 + (val - sMkm1)/k;
-            entropy_fm[mc_t_ind][i] = sMk;  
-            entropy_sm[mc_t_ind][i]+=val*val;
-			entropy_variance[mc_t_ind][i] += (val - sMkm1)*(val - sMk);
+            entropy_fm[counter][i] = sMk;  
+            entropy_sm[counter][i]+=val*val;
+			entropy_variance[counter][i] += (val - sMkm1)*(val - sMk);
 	     }  
       }
    } 
@@ -1599,10 +1607,10 @@ void FiniteVolume::compute_dt ()
    if(param.time_mode == "unsteady")
    {
       // Adjust time step so that final time is exactly reached
-      if(elapsed_time + dt_global > mc_time[mc_t_ind])
+      if(elapsed_time + dt_global > time_instance[counter])
       {
-         dt_global = mc_time[mc_t_ind] - elapsed_time;
-         mc_time_reached = true;
+         dt_global = time_instance[counter] - elapsed_time;
+         time_instance_reached = true;
       }   
       for(unsigned int i=0; i<grid.n_vertex; ++i)
          dt[i] = dt_global;
@@ -1876,7 +1884,7 @@ void FiniteVolume::compute_stat_norm ()
 {
    t_l1_norm.start_time();
    
-   for(unsigned int t = 0; t<mc_time.size(); ++t)
+   for(unsigned int t = 0; t<time_instance.size(); ++t)
    {
 	  for(unsigned int i = 0; i<grid.n_vertex; ++i)
 	  {
@@ -1972,7 +1980,7 @@ void FiniteVolume::output (const unsigned int iter, bool write_variables)
    t_sol_out.start_time();
 
    Writer writer (grid, param.material, param.write_format, param.write_surfaces, 
-                  elapsed_time, SAMPLE_DIR);
+                  elapsed_time, param.time_mode,SAMPLE_DIR);
    writer.attach_data (primitive);
    writer.attach_data (grid.dcarea,"dual_area");
    writer.attach_gradient (dE);
@@ -1980,15 +1988,11 @@ void FiniteVolume::output (const unsigned int iter, bool write_variables)
       writer.attach_variables (param.write_variables);
    
    writer.master_write_check(write_to_master);     
-   writer.output (get_proc_loc_id(),counter, elapsed_time);
+   writer.output (get_proc_loc_id(),counter);
    output_surface_sf(SAMPLE_DIR);
    output_surface_hf(SAMPLE_DIR);
    // if(param.save_mesh_Pe)
-//       output_mesh_Pe(SAMPLE_DIR);
-   if(param.time_mode == "unsteady") 
-      ++counter;
-   else
-      write_to_master = false;   
+//       output_mesh_Pe(SAMPLE_DIR);  
    
    t_sol_out.add_time();
 }
@@ -2020,19 +2024,19 @@ void FiniteVolume::output_mean()
 {
    t_mean_out.start_time();
    
-   Writer writer (grid, param.write_format, MEAN_DIR);
-   writer.attach_data (primitive_fm[mc_t_ind]);
+   Writer writer (grid, param.write_format, time_instance[counter],param.time_mode,MEAN_DIR);
+   writer.attach_data (primitive_fm[counter]);
    writer.attach_data (grid.dcarea,"dual_area");
    if(has_density)
-      writer.attach_data (density_fm[mc_t_ind],"density");
+      writer.attach_data (density_fm[counter],"density");
    if(has_mach)
-      writer.attach_data (mach_fm[mc_t_ind],"mach");
+      writer.attach_data (mach_fm[counter],"mach");
    if(has_vorticity)
-      writer.attach_data (vorticity_fm[mc_t_ind],"vorticity");
+      writer.attach_data (vorticity_fm[counter],"vorticity");
    if(has_entropy)
-      writer.attach_data (entropy_fm[mc_t_ind],"entropy");         
+      writer.attach_data (entropy_fm[counter],"entropy");         
    writer.master_write_check(write_to_master_mean);     
-   writer.output (get_proc_id(),mc_t_ind, mc_time[mc_t_ind]);
+   writer.output (get_proc_id(),counter);
  
    t_mean_out.add_time();
 }
@@ -2044,19 +2048,19 @@ void FiniteVolume::output_sec_mom()
 {
    t_mean_out.start_time();
    
-   Writer writer (grid, param.write_format, SEC_MOM_DIR);
-   writer.attach_data (primitive_sm[mc_t_ind]);
+   Writer writer (grid, param.write_format, time_instance[counter], param.time_mode,SEC_MOM_DIR);
+   writer.attach_data (primitive_sm[counter]);
    writer.attach_data (grid.dcarea,"dual_area");
    if(has_density)
-      writer.attach_data (density_sm[mc_t_ind],"density");
+      writer.attach_data (density_sm[counter],"density");
    if(has_mach)
-      writer.attach_data (mach_sm[mc_t_ind],"mach");
+      writer.attach_data (mach_sm[counter],"mach");
    if(has_vorticity)
-      writer.attach_data (vorticity_sm[mc_t_ind],"vorticity");
+      writer.attach_data (vorticity_sm[counter],"vorticity");
    if(has_entropy)
-      writer.attach_data (entropy_sm[mc_t_ind],"entropy");         
+      writer.attach_data (entropy_sm[counter],"entropy");         
    writer.master_write_check(write_to_master_sec_mom);     
-   writer.output (get_proc_id(),mc_t_ind, mc_time[mc_t_ind]);
+   writer.output (get_proc_id(),counter);
  
    t_mean_out.add_time();
 }
@@ -2068,19 +2072,19 @@ void FiniteVolume::output_var()
 {
    t_var_out.start_time();
    
-   Writer writer (grid, param.write_format, VAR_DIR);
-   writer.attach_data (primitive_variance[mc_t_ind]);
+   Writer writer (grid, param.write_format, time_instance[counter], param.time_mode,VAR_DIR);
+   writer.attach_data (primitive_variance[counter]);
    writer.attach_data (grid.dcarea,"dual_area");
    if(has_density)
-      writer.attach_data (density_variance[mc_t_ind],"density");
+      writer.attach_data (density_variance[counter],"density");
    if(has_mach)
-      writer.attach_data (mach_variance[mc_t_ind],"mach");
+      writer.attach_data (mach_variance[counter],"mach");
    if(has_vorticity)
-      writer.attach_data (vorticity_variance[mc_t_ind],"vorticity");
+      writer.attach_data (vorticity_variance[counter],"vorticity");
    if(has_entropy)
-      writer.attach_data (entropy_variance[mc_t_ind],"entropy");
+      writer.attach_data (entropy_variance[counter],"entropy");
    writer.master_write_check(write_to_master_var);     
-   writer.output (get_proc_id(),mc_t_ind, mc_time[mc_t_ind]);
+   writer.output (get_proc_id(),counter);
 
    t_var_out.add_time();
 }
@@ -2232,32 +2236,34 @@ void FiniteVolume::solve (const int sample_id)
    if(param.write_soln && !restart)
    {
 	  output (0);
-	  // if(check_group_base())
-// 		 iter_file << 0 << endl;
+	  if(param.time_mode == "steady") 
+          write_to_master = false; 
    }   
    if(param.online_stat)
    {
 	  increment_moments(sample_id);
-	  //save_sample_pdf();
    }  
    
-   if(param.time_mode == "steady")
-      counter++;  // Solns from here on saved with index 1 for steady flow
+   if(counter == 0)
+      counter++;  
    
-   for(unsigned int i =0; i<mc_time.size()-1; ++i)
-   {
-	  if(elapsed_time >= mc_time[i] && elapsed_time < mc_time[i+1])
-	     mc_t_ind = i+1;
-   }
+   // if(!save_by_frequency)
+//    {
+// 	   for(unsigned int i =0; i<time_instance.size()-1; ++i)
+// 	   {
+// 		  if(elapsed_time >= time_instance[i] && elapsed_time < time_instance[i+1])
+// 			 time_elapsed_ind = i+1;
+// 	   }
+//    }
 
-   found_stop_file = check_for_stop_file ();
+   // found_stop_file = check_for_stop_file ();
    
-   unsigned int pseudo_iter = 0;
+   unsigned int term_iter = 0;  // This is used for terminating simulation when max iter is reached
    if(param.time_mode == "steady")
-      pseudo_iter = iter;  
+      term_iter = iter;       
    
    while (residual_norm_total > param.min_residue &&
-          pseudo_iter < param.max_iter && 
+          term_iter < param.max_iter && 
           elapsed_time < param.final_time && !found_stop_file)
    {
       store_conserved_old ();
@@ -2290,7 +2296,7 @@ void FiniteVolume::solve (const int sample_id)
 
       ++iter;   
 	  if(param.time_mode == "steady")
-		 pseudo_iter = iter;
+		 term_iter = iter;
 		 
       elapsed_time += dt_global;
       if(param.write_log)
@@ -2299,33 +2305,35 @@ void FiniteVolume::solve (const int sample_id)
       compute_forces (iter);
       compute_global (iter);
       
-      if(iter % param.write_frequency == 0 && save_by_frequency && param.write_soln)
+      if(param.time_mode == "steady" && iter % param.write_frequency == 0 && param.write_soln)
       {
          output (iter);
          last_output_iter = iter;
-         found_stop_file = check_for_stop_file ();
+         //found_stop_file = check_for_stop_file ();
       }
-      else if(mc_time_reached && param.time_mode == "unsteady")
+      else if(time_instance_reached && param.time_mode == "unsteady")
       {
          if(param.write_soln)
 		 {
 			output (iter);
 			last_output_iter = iter;
-            found_stop_file = check_for_stop_file ();
+            //found_stop_file = check_for_stop_file ();
 		 }
 		 if(param.online_stat)
 		 {
+			
 			increment_moments(sample_id);
 			//save_sample_pdf();
 		 }
+		 counter++;
 		 // if(param.write_soln && check_group_base())
 // 			iter_file << counter << endl;
-		 mc_t_ind++; 
-		 mc_time_reached = false;	 
+		// counter++; 
+		 time_instance_reached = false;	 
       }
-// 	  if(iter % param.write_frequency == 0 || mc_time_reached) 
+// 	  if(iter % param.write_frequency == 0 || time_instance_reached) 
 // 	  {
-// 		 if(mc_time_reached )
+// 		 if(time_instance_reached )
 // 		 {
 // 			if(param.online_stat)
 // 			{
@@ -2334,8 +2342,8 @@ void FiniteVolume::solve (const int sample_id)
 // 			}
 // 			if(param.write_soln && check_group_base())
 // 			   iter_file << counter << endl;
-// 			mc_t_ind++; 
-// 			mc_time_reached = false;
+// 			counter++; 
+// 			time_instance_reached = false;
 // 		 }
 // 		 if(param.write_soln)
 // 		 {
@@ -2348,9 +2356,11 @@ void FiniteVolume::solve (const int sample_id)
          output_restart (iter);
 
    }
+
    
    if(param.time_mode == "steady")  // Saving final output for steady simulations
    {
+      time_instance[1] = elapsed_time;
       if(param.write_soln)
          output (iter);
       if(param.online_stat)
@@ -2358,8 +2368,11 @@ void FiniteVolume::solve (const int sample_id)
 		 increment_moments(sample_id);
 		 //save_sample_pdf();
 	  }
+	  MPI_LOC_ASSERT(counter == 1);
    }
-   
+   else
+      MPI_LOC_ASSERT(counter == time_instance.size()); // counter is one more than expected for unsteady
+    
    if(param.find_error)
       compute_error_norm();
    // Save final solution
@@ -2416,8 +2429,8 @@ void FiniteVolume::run ()
    {
 	   int sample_no = param.SAMPLE_LIST[ind];
 	      
-	   counter  = 0; // For file indexing
-	   mc_t_ind = 0;  // Index for mc time snap shots
+	   counter  = 0;    // For file indexing (also snapshot indexing for unsteady flows)
+	   //counter = 0;    // Index for time snap shots
 	   
 	   initialize_sample_run(ind); 
 	   
@@ -2445,7 +2458,7 @@ void FiniteVolume::run ()
 		  cout<<"  Saving sample mean and variance and second moments ...\n";
 	   if(get_proc_id() < NPART)
 	   {
-		  for(mc_t_ind = 0; mc_t_ind < mc_time.size(); ++mc_t_ind)
+		  for(counter = 0; counter < time_instance.size(); ++counter)
 		  {
 			 output_mean();
 			 output_sec_mom();

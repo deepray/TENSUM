@@ -69,7 +69,7 @@ void Writer::attach_gradient (std::vector<std::vector<Vector> >& dE_)
 //------------------------------------------------------------------------------
 // Call output function for saving solution to file
 //------------------------------------------------------------------------------
-void Writer::output (int part, int counter, double elapsed_time)
+void Writer::output (int part, int counter)
 {
    string filename,filename_comm, filemaster;
    if     (counter <= 9)    filename = "sol000";
@@ -133,10 +133,13 @@ void Writer::output_vtk (string filename)
    vtk << "# vtk DataFile Version 3.0" << endl;
    vtk << "flo3d" << endl;
    vtk << "ASCII" << endl;
-   vtk << "DATASET UNSTRUCTURED_GRID" << endl;
-   vtk << "FIELD FieldData 1" <<endl;
-   vtk << "TIME 1 1 double"<<endl;
-   vtk << time <<endl;
+   if(time_mode == "unsteady")
+   {
+	   vtk << "DATASET UNSTRUCTURED_GRID" << endl;
+	   vtk << "FIELD FieldData 1" <<endl;
+	   vtk << "TIME 1 1 double"<<endl;
+	   vtk << time <<endl;
+   }
    vtk << "POINTS  " << grid->n_vertex << "  double" << endl;
 
    for(unsigned int i=0; i<grid->n_vertex; ++i)

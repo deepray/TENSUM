@@ -13,7 +13,7 @@ using namespace std;
 //------------------------------------------------------------------------------
 void FiniteVolume::reduce_stat_norm()
 {   
-    int ntime = mc_time.size();
+    int ntime = time_instance.size();
     int nvars = NVAR + param.write_variables.size();
     double SBUF_MEAN[nvars*ntime], RBUF_MEAN[nvars*ntime];
     double SBUF_VAR[nvars*ntime], RBUF_VAR[nvars*ntime];

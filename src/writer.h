@@ -35,6 +35,7 @@ class Writer
               std::string      format,
               std::vector<int> surfaces,
               const double time,
+              std::string time_mode,
               std::string SAMPLE_DIR) 
          : 
          grid (&grid),
@@ -48,6 +49,7 @@ class Writer
          write_entropy (false),
          write_vorticity (false),
          SAMPLE_DIR(SAMPLE_DIR),
+         time_mode(time_mode),
          time (time)
          {
             if(check_group_base())
@@ -59,6 +61,8 @@ class Writer
          
       Writer (const Grid&      grid,
               std::string      format,
+              const double time,
+              std::string time_mode,
               std::string DIR) 
          : 
          grid (&grid),
@@ -69,7 +73,9 @@ class Writer
          write_density (false),
          write_entropy (false),
          write_vorticity (false),
-         SAMPLE_DIR(DIR)
+         SAMPLE_DIR(DIR),
+         time_mode(time_mode),
+         time (time)
          {
             if(get_proc_id() == 0)
             {
@@ -82,7 +88,7 @@ class Writer
       void attach_data (std::vector<double>& data, std::string name);
       void attach_variables (const std::vector<std::string>& variables);
       void attach_gradient (std::vector<std::vector<Vector> >& dE);
-      void output (int part, int counter, double elapsed_time);
+      void output (int part, int counter);
       void output_vtk (std::string filename);
       void output_surfaces (std::string DIR_NAME, std::string index);
       void output_level (std::string levelfilename);
@@ -115,6 +121,7 @@ class Writer
       std::ofstream master_file;
       bool write_to_master;
       std::string SAMPLE_DIR;
+      std::string time_mode;
       double time;
 
 };

@@ -36,7 +36,7 @@ void FiniteVolume::save_stat_norm()
           mean_l1_f << " ENTROPY";     
        mean_l1_f << "\n";
        
-       for(unsigned int t = 0; t<mc_time.size(); ++t)
+       for(unsigned int t = 0; t<time_instance.size(); ++t)
        {
            mean_l1_f << t
                      <<" "<<prim_mean_l1[t].temperature
@@ -78,7 +78,7 @@ void FiniteVolume::save_stat_norm()
           var_l1_f << " ENTROPY";     
        var_l1_f << "\n";
        
-       for(unsigned int t = 0; t<mc_time.size(); ++t)
+       for(unsigned int t = 0; t<time_instance.size(); ++t)
        {
            var_l1_f << t
                      <<" "<<prim_var_l1[t].temperature

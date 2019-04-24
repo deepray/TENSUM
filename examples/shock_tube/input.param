@@ -9,12 +9,12 @@ partition_dir_loc = .
 solver_param_file = param.in
 
 # Flags for main operations
-gen_mesh_and_part = yes
+gen_mesh_and_part = no
 initiate_solver   = yes
 
 # Flags for solver
 use_solver        = yes
-read_from_restart = no 
+read_from_restart = no
 print_cells       = yes
 print_bounds      = no
 verbose           = yes
