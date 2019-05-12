@@ -1,10 +1,10 @@
 # TENSUM: <span style="color:red">T</span>wo-dimensional <span style="color:red">en</span>tropy <span style="color:red">s</span>table <span style="color:red">u</span>nstructred <span style="color:red">m</span>esh solver</span>
 
-###Created by: Deep Ray, TIFR-CAM, Bangalore 
+### Created by: Deep Ray, TIFR-CAM, Bangalore 
 
-###Webpage: deepray.github.io 
+### Webpage: deepray.github.io 
 
-###Date : 30 October, 2015
+### Date : 30 October, 2015
 
 **TENSUM** is a parallelized finite volume solver for compressible flows on unstructured triangular grids. It is based on the [TAXIS](https://github.com/cpraveen/taxis) solver developed by [Praveen Chandrashekar](http://cpraveen.github.io/). Details about the discretiziation and implementation of the various numerical schemes can be found in
 
@@ -32,7 +32,7 @@
    </ul>
 </ul>
 
-##<a name="compiling"></a>Compiling the code 
+## <a name="compiling"></a>Compiling the code 
 After cloning the git repository into your local system, you need to set the following paths/variables in your .bashrc file
 
 ~~~sh
@@ -59,7 +59,7 @@ should start the Gmsh console.
 
 <a href="#TOC" style="float: right; color:green">back to table of contents</a><br/>
 
-##<a name="usage"></a>Using the code 
+## <a name="usage"></a>Using the code 
 If the various paths have been correctly added to the .bashrc file, then the solver can be used from anywhere in the system. Some important test cases have given in the **examples** sub-directory. It is recommended that all future test cases be run from the examples folder. 
 
 To run a particular problem, two parameter files are required. The first one is called `input.param` by default, and is needed by the python wrapper that initiates different parts of the code. The second parameter file is called `param.in` by default, and is needed by the executable `tensum`.
