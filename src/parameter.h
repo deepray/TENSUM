@@ -43,7 +43,7 @@ class Parameter
       std::string time_mode;        /*!< Options: steady, unsteady */
       std::string time_scheme;      /*!< Options: heuns, ssprk3, rk4 */
       unsigned int n_rks;           /*!< Number of rk steps */
-      unsigned int max_iter;        /*!< Maximum number of allowed iterations.
+      unsigned long int max_iter;   /*!< Maximum number of allowed iterations.
                                          Useful for steady simulations. Note that
                                          this does not effect unsteady simulations.*/
       double time_step;             /*!< Specifies global time_step to be used */

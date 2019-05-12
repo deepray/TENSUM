@@ -92,7 +92,7 @@ class Writer
       void output_vtk (std::string filename);
       void output_surfaces (std::string DIR_NAME, std::string index);
       void output_level (std::string levelfilename);
-      void output_restart (int iter, int counter,int head_tag, double time, double res0);
+      void output_restart (unsigned long int iter, int counter,int head_tag, double time, double res0);
       
       ~Writer()
       {

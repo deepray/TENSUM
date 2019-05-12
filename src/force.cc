@@ -113,7 +113,7 @@ void FiniteVolume::create_force_face_list ()
 // Compute forces
 // TODO: Axisymmetric case
 //------------------------------------------------------------------------------
-void FiniteVolume::compute_forces (unsigned int iter)
+void FiniteVolume::compute_forces (unsigned long int iter)
 {
    // Do we have any forces to compute
    if(param.force_data.size() == 0) return;

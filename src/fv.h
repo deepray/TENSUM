@@ -169,7 +169,7 @@ class FiniteVolume
       double               int_step_time;       /*!<intermediate time step. This is required
                                                     for Heun's method for time integration*/
       bool                 found_stop_file;                                              
-      unsigned int         last_iter;           /*!<this corresponds to the last iteration 
+      unsigned long int    last_iter;           /*!<this corresponds to the last iteration 
                                                     in the restart file. If no restart file 
                                                     is used, then it is set to 0*/
       // bool                 save_by_frequency;    /*!<if this is true, then the solution files
@@ -362,22 +362,21 @@ class FiniteVolume
       void compute_residual ();				       /*!<Computes total residual*/
       void compute_dt ();						   /*!<Computes local time step*/
       
-      void compute_residual_norm (const unsigned int iter);  /*!<Computes residual norm*/
-      void log_messages (const unsigned int iter);           /*!<Prints residual norm into 
+      void compute_residual_norm (const unsigned long int iter);  /*!<Computes residual norm*/
+      void log_messages (const unsigned long int iter);           /*!<Prints residual norm into 
       													  		 log file*/
       void update_solution (const unsigned int r);			 /*!<Updates solution in RK
       													  		 step*/
       void solve (const int sample_id);						 /*!<Main solve for a sample*/
-      void compute_bounds (const unsigned int iter);        					     /*!<Computes solution bounds*/
-      void output (const unsigned int iter, 
-                   bool write_variables = true);			 /*!<Writes output files*/	
-      void output_restart (int iter);						 /*!<Writes restart files*/   
+      void compute_bounds (const unsigned long int iter);        					     /*!<Computes solution bounds*/
+      void output (bool write_variables = true);			 /*!<Writes output files*/	
+      void output_restart (unsigned long int iter);						 /*!<Writes restart files*/   
       void output_surface_sf (std::string DIR);              /*!<Writes surface skin-friction*/
       void output_surface_hf (std::string DIR);             /*!<Writes surface heat flux*/
       void output_mesh_Pe(std::string DIR);                  /*!<Writes mesh-Pe number*/
       void create_force_face_list ();                        /*!<Creates force-face listing*/
-      void compute_forces (unsigned int iter);				 /*!<Computes forces*/
-      void compute_global (unsigned int iter);				 /*!<Computes global quantities*/
+      void compute_forces (unsigned long int iter);				 /*!<Computes forces*/
+      void compute_global (unsigned long int iter);				 /*!<Computes global quantities*/
       void compute_error_norm ();				             /*!<Computes error norms*/
       
       void reduce_gradient_periodic();           /*!<Reduces gradients across periodic nodes*/

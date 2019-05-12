@@ -779,7 +779,7 @@ As done for for the [NACA-0012 example](#inv_naca), the solution variables can b
 <p float="center">
 <img src="img/step/density_10.png" width="700">
 </p>
-<figcaption>Fig. 5: Density plot for flow past a step.</figcaption>
+<figcaption>Fig. 6: Density plot for flow past a step.</figcaption>
 </figure>
 
 

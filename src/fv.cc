@@ -1797,7 +1797,7 @@ void FiniteVolume::compute_error_norm ()
 //------------------------------------------------------------------------------
 // Compute L2 norm of mass, momentum and energy residuals
 //------------------------------------------------------------------------------
-void FiniteVolume::compute_residual_norm (const unsigned int iter)
+void FiniteVolume::compute_residual_norm (const unsigned long int iter)
 {
    t_res_norm.start_time();
    
@@ -1935,7 +1935,7 @@ void FiniteVolume::compute_stat_norm ()
 //------------------------------------------------------------------------------
 // Log messages to screen and file
 //------------------------------------------------------------------------------
-void FiniteVolume::log_messages (const unsigned int iter)
+void FiniteVolume::log_messages (const unsigned long int iter)
 {
    t_log.start_time();
    if(check_group_base())
@@ -1943,7 +1943,7 @@ void FiniteVolume::log_messages (const unsigned int iter)
 	   if(param.time_mode == "steady")
 	   {
 		  // File output
-		  res_file  << setw(8) << iter << "  " 
+		  res_file  << setw(10) << iter << "  " 
 					<< scientific
 					<< setprecision (4) 
 					<< dt_global << "  " 
@@ -1958,7 +1958,7 @@ void FiniteVolume::log_messages (const unsigned int iter)
 	   else
 	   {
 		  // File output
-		  res_file  << setw(8) << iter << "  " 
+		  res_file  << setw(10) << iter << "  " 
 					<< scientific
 					<< setprecision (12) 
 					<< dt_global << "  " 
@@ -1975,7 +1975,7 @@ void FiniteVolume::log_messages (const unsigned int iter)
 //------------------------------------------------------------------------------
 // Save solution to file for visualization
 //------------------------------------------------------------------------------
-void FiniteVolume::output (const unsigned int iter, bool write_variables)
+void FiniteVolume::output (bool write_variables)
 {
    t_sol_out.start_time();
 
@@ -2003,7 +2003,7 @@ void FiniteVolume::output (const unsigned int iter, bool write_variables)
 //------------------------------------------------------------------------------
 // Save solution to file for restart
 //------------------------------------------------------------------------------
-void FiniteVolume::output_restart (int iter)
+void FiniteVolume::output_restart (unsigned long int iter)
 {
    Writer writer (grid,SAMPLE_DIR);
    writer.attach_data (primitive);
@@ -2095,7 +2095,7 @@ void FiniteVolume::output_var()
 //------------------------------------------------------------------------------
 // Find minimum and maximum values in the solution
 //------------------------------------------------------------------------------
-void FiniteVolume::compute_bounds (const unsigned int iter)
+void FiniteVolume::compute_bounds (const unsigned long int iter)
 {
    PrimVar prim_min;
    PrimVar prim_max;
@@ -2163,7 +2163,7 @@ void FiniteVolume::compute_bounds (const unsigned int iter)
    if (prim_min.temperature < 0.0 ||
        prim_min.pressure    < 0.0)
    {
-         output (iter, false);
+         output (false);
          MPI_LOC_ERR("Error:: Observed negative temperature/pressure in solution");
    }
 }
@@ -2171,7 +2171,7 @@ void FiniteVolume::compute_bounds (const unsigned int iter)
 //------------------------------------------------------------------------------
 // Compute some quantities like global KE
 //------------------------------------------------------------------------------
-void FiniteVolume::compute_global (unsigned int iter)
+void FiniteVolume::compute_global (unsigned long int iter)
 {
    if (!param.has_global) return;
 
@@ -2230,15 +2230,15 @@ void FiniteVolume::solve (const int sample_id)
 {
    t_sample_solve.start_time();
    
-   unsigned int iter = last_iter;
+   unsigned long int iter = last_iter;
    residual_norm_total = 1.0e20;
-   unsigned int last_output_iter = 0;
+   unsigned long int last_output_iter = 0;
    
    compute_gradients ();
    
    if(param.write_soln && !restart)
    {
-	  output (0);
+	  output ();
 	  if(param.time_mode == "steady") 
           write_to_master = false; 
    }   
@@ -2261,7 +2261,7 @@ void FiniteVolume::solve (const int sample_id)
 
    // found_stop_file = check_for_stop_file ();
    
-   unsigned int term_iter = 0;  // This is used for terminating simulation when max iter is reached
+   unsigned long int term_iter = 0;  // This is used for terminating simulation when max iter is reached
    if(param.time_mode == "steady")
       term_iter = iter;       
    
@@ -2310,7 +2310,7 @@ void FiniteVolume::solve (const int sample_id)
       
       if(param.time_mode == "steady" && iter % param.write_frequency == 0 && param.write_soln)
       {
-         output (iter);
+         output ();
          last_output_iter = iter;
          //found_stop_file = check_for_stop_file ();
       }
@@ -2318,7 +2318,7 @@ void FiniteVolume::solve (const int sample_id)
       {
          if(param.write_soln)
 		 {
-			output (iter);
+			output ();
 			last_output_iter = iter;
             //found_stop_file = check_for_stop_file ();
 		 }
@@ -2366,7 +2366,7 @@ void FiniteVolume::solve (const int sample_id)
       write_to_master = true;
       time_instance[1] = elapsed_time;
       if(param.write_soln)
-         output (iter);
+         output ();
       if(param.online_stat)
 	  {
 		 increment_moments(sample_id);

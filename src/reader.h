@@ -29,6 +29,7 @@ class Reader
       void operator>> (std::string &s);
       void operator>> (int &i);
       void operator>> (unsigned int &i);
+      void operator>> (unsigned long int &i);
       void operator>> (double &d);
       void getline (std::string &s);
       bool bos ();
@@ -112,6 +113,16 @@ void Reader::operator>> (int &i)
 //------------------------------------------------------------------------------
 inline
 void Reader::operator>> (unsigned int &i)
+{
+   skipComment ();
+   f >> i;
+}
+
+//------------------------------------------------------------------------------
+// Read an unsigned long integer
+//------------------------------------------------------------------------------
+inline
+void Reader::operator>> (unsigned long int &i)
 {
    skipComment ();
    f >> i;

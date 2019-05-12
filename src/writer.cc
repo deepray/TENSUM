@@ -378,7 +378,7 @@ void Writer::output_surfaces (string DIR_NAME, string index)
 //------------------------------------------------------------------------------
 // Write solution for restarting
 //------------------------------------------------------------------------------
-void Writer::output_restart (int iter, int counter, int head_tag, double time, double res0)
+void Writer::output_restart (unsigned long int iter, int counter, int head_tag, double time, double res0)
 {
    MPI_LOC_ASSERT (has_primitive);
 
