@@ -678,18 +678,13 @@ which will read the data in `SAMPLE_0` and create the data files with the name `
 
 where the value of `k` should be set equal to `time_stamps`. The script will generate and save the plots in pdf format. 
 
-
-<p float="center">
-  <img src="img/1dsod/density.png" width="250" />
-  <img src="img/1dsod/density.png" width="250" /> 
-  <img src="img/1dsod/density.png" width="250" />
-</p>
-
 <center>
 <figure>
-<img src="img/1dsod/density.png" width="250">
-<img src="img/1dsod/vel_x.png" width="250">
-<img src="img/1dsod/pressure.png" width="250">
+<p float="center">
+  <img src="img/1dsod/density.png" width="330" />
+  <img src="img/1dsod/density.png" width="330" /> 
+  <img src="img/1dsod/density.png" width="330" />
+</p>
 <figcaption>Fig. 2: Solution for the 1D shocktube problem</figcaption>
 </figure>
 </center>
@@ -717,9 +712,11 @@ where `<cmin>` and `<cmax>` are respectively the minumum and maximum pseudocolor
 
 <center>
 <figure>
-<img src="img/isenvort/density_0.png" width="250">
-<img src="img/isenvort/density_2.png" width="250">
-<img src="img/isenvort/density_4.png" width="250">
+<p float="center">
+<img src="img/isenvort/density_0.png" width="330" />
+<img src="img/isenvort/density_2.png" width="330" />
+<img src="img/isenvort/density_4.png" width="330" />
+</p>
 <figcaption>Fig. 3: Solution for the isentropic vortex at three different time instances</figcaption>
 </figure>
 </center>
