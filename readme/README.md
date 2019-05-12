@@ -678,6 +678,13 @@ which will read the data in `SAMPLE_0` and create the data files with the name `
 
 where the value of `k` should be set equal to `time_stamps`. The script will generate and save the plots in pdf format. 
 
+
+<p float="center">
+  <img src="img/1dsod/density.png" width="250" />
+  <img src="img/1dsod/density.png" width="250" /> 
+  <img src="img/1dsod/density.png" width="250" />
+</p>
+
 <center>
 <figure>
 <img src="img/1dsod/density.png" width="250">
