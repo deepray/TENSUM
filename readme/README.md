@@ -57,7 +57,7 @@ $ gmsh
 
 should start the Gmsh console. 
 
-<a href="#TOC" style="float: right; color:green">back to table of contents</a><br/>
+<p align="right"> <a href="#TOC" >back to table of contents</a><br/> </p>
 
 ## <a name="usage"></a>Using the code 
 If the various paths have been correctly added to the .bashrc file, then the solver can be used from anywhere in the system. Some important test cases have given in the **examples** sub-directory. It is recommended that all future test cases be run from the examples folder. 
@@ -70,7 +70,7 @@ To run the code, go to the folder containing the `input.param` file and run
 tensum_run.py input.param
 ~~~
 
-<a href="#TOC" style="float: right; color:green">back to table of contents</a><br/>
+<p align="right"> <a href="#TOC" >back to table of contents</a><br/> </p>
 
 
 ## <a name="inputparam"></a>Description of `input.param`
@@ -115,7 +115,7 @@ nprocs            = 2
  * If `verbose` is set to `yes`, then addition solver data will be printed on screen. This flag is useful for debugging purposes.
  * The number of processors to be used by the solver is set using `nprocs`. **NOTE:** This must be a positive multiple of `mesh_parts`.
 
-<a href="#TOC" style="float: right; color:green">back to table of contents</a><br/>
+<p align="right"> <a href="#TOC" >back to table of contents</a><br/> </p>
 
 
 ## <a name="partf"></a>Partitioned file format
@@ -185,7 +185,7 @@ In the above partition file
  * If the cell is a ghost cell, then `<ghost>` is set to 1. Else it is set to 0.
  
 
-<a href="#TOC" style="float: right; color:green">back to table of contents</a><br/>
+<p align="right"> <a href="#TOC" >back to table of contents</a><br/> </p>
 
 
 ## <a name="param"></a>Description of `param.in`
@@ -645,7 +645,7 @@ Since the solver is at present restricted to 2D, set `<vz_fun>` to 0.
 	 
 	
 	
-<a href="#TOC" style="float: right; color:green">back to table of contents</a><br/>
+<p align="right"> <a href="#TOC" >back to table of contents</a><br/> </p>
 
 
 ## <a name="examples"></a>Example test cases
@@ -687,7 +687,7 @@ where the value of `k` should be set equal to `time_stamps`. The script will gen
 <figcaption>Fig. 2: Solution for the 1D shocktube problem</figcaption>
 </figure>
 
-<a href="#TOC" style="float: right; color:green">back to table of contents</a><br/>
+<p align="right"> <a href="#TOC" >back to table of contents</a><br/> </p>
 
 ### <a name="isenvort"></a>Isentropic vortex (examples/Euler/isentropic_vortex)
 
@@ -718,7 +718,7 @@ where `<cmin>` and `<cmax>` are respectively the minumum and maximum pseudocolor
 </figure>
 
 
-<a href="#TOC" style="float: right; color:green">back to table of contents</a><br/>
+<p align="right"> <a href="#TOC" >back to table of contents</a><br/> </p>
 
 
 ### <a name="inv_naca"></a>Inviscid transonic flow past a NACA-0012 airfoil (examples/Euler/naca)
@@ -746,7 +746,7 @@ where `<npart>` is the number of mesh partitions created, while `<surf_tag_upper
 </figure>
 
 
-<a href="#TOC" style="float: right; color:green">back to table of contents</a><br/>
+<p align="right"> <a href="#TOC" >back to table of contents</a><br/> </p>
 
 ### <a name="inv_rae"></a>Inviscid transonic flow past a RAE-2822 airfoil (examples/Euler/rae)
 
@@ -766,7 +766,7 @@ As done for for the [NACA-0012 example](#inv_naca), the solution variables can b
 
 
 
-<a href="#TOC" style="float: right; color:green">back to table of contents</a><br/>
+<p align="right"> <a href="#TOC" >back to table of contents</a><br/> </p>
 
 ### <a name="step"></a>Forward step in wind tunnel (examples/Euler/forward_step)
 
@@ -784,7 +784,7 @@ As done for for the [NACA-0012 example](#inv_naca), the solution variables can b
 
 
 
-<a href="#TOC" style="float: right; color:green">back to table of contents</a><br/>
+<p align="right"> <a href="#TOC" >back to table of contents</a><br/> </p>
 
 
 ### <a name="other_tests"></a>Other available examples
