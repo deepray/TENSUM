@@ -123,7 +123,7 @@ An important tool implemented inside Gmsh is METIS, which is a package used for 
 
 <center>
 <figure>
-<img src="img/primary_colored.pdf">
+<img src="img/primary_colored.png">
 <figcaption>Fig. 1: Paritioned NACA-0012 mesh</figcaption>
 </figure>
 </center>
@@ -680,9 +680,9 @@ where the value of `k` should be set equal to `time_stamps`. The script will gen
 
 <center>
 <figure>
-<img src="img/1dsod/density.pdf" width="250">
-<img src="img/1dsod/vel_x.pdf" width="250">
-<img src="img/1dsod/pressure.pdf" width="250">
+<img src="img/1dsod/density.png" width="250">
+<img src="img/1dsod/vel_x.png" width="250">
+<img src="img/1dsod/pressure.png" width="250">
 <figcaption>Fig. 2: Solution for the 1D shocktube problem</figcaption>
 </figure>
 </center>
@@ -739,7 +739,7 @@ where `<npart>` is the number of mesh partitions created, while `<surf_tag_upper
 <center>
 <figure>
 <img src="img/naca_inv/mach.png" width="350">
-<img src="img/naca_inv/Cp.pdf" width="350">
+<img src="img/naca_inv/Cp.png" width="350">
 <figcaption>Fig. 4: Mach contour lines (left) and Cp plot (right) for flow past a NACA-0012 airfoil. Lift = 0.2914, Drag = 0.0734</figcaption>
 </figure>
 </center>
@@ -756,7 +756,7 @@ As done for for the [NACA-0012 example](#inv_naca), the solution variables can b
 <center>
 <figure>
 <img src="img/rae_inv/mach.png" width="350">
-<img src="img/rae_inv/Cp.pdf" width="350">
+<img src="img/rae_inv/Cp.png" width="350">
 <figcaption>Fig. 5: Mach contour lines (left) and Cp plot (right) for flow past a RAE-2822 airfoil. Lift = 0.6041, Drag = 0.03195</figcaption>
 </figure>
 </center>
