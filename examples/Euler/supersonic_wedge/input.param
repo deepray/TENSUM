@@ -1,0 +1,24 @@
+‘’’INPUT FILE FOR PYTHON WRAPPER
+   WARNING!! DO NOT USE TABS ‘’’
+
+# Basic paths/parameters
+mesh_file_name    = wedge.geo
+mesh_parts        = 4
+mesh_dimension    = 2
+partition_dir_loc = .
+solver_param_file = param.in
+
+# Flags for main operations
+gen_mesh_and_part = yes
+initiate_solver   = yes
+
+# Flags for solver
+use_solver        = yes
+read_from_restart = no 
+print_cells       = no
+print_bounds      = no
+verbose           = yes
+
+# Number of processors to be used in the solver.
+nprocs            = 4
+

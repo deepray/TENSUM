@@ -1,0 +1,138 @@
+grid
+{
+   cell   voronoi
+}
+
+numeric
+{
+   time_mode    steady
+   time_scheme  ssprk3
+   time_step    0.0
+   cfl          0.6
+   max_iter     500000
+   final_time   1.0e6
+   min_residue  1.0e-7
+   reconstruct  
+   {
+      method   first
+   }
+   bc_scheme    weak
+   liou_fix     no
+   sample_list
+   {
+	  groups
+	  {
+	  }
+	  free_list
+	  {
+	  }   
+   }
+   rnd_file_loc    rnd_nos.dat
+   rnd_per_sample  0
+}
+
+material
+{
+   gamma       1.4
+   gas_const   1.0
+   model       euler
+   viscosity
+   {
+      model    constant
+      mu_ref   0
+   }
+   prandtl     1.0
+   flux        kepes_tecno_roe
+   flux_par
+   {
+      alpha      0
+      beta       0
+   }
+   balance
+   {
+      switch_active  no
+      ND             YES
+      HEAT           YES
+      VISC           YES
+   }
+}
+
+constants
+{
+  aoa  1.0
+  T    1
+  p    1
+  M    0.85
+  gam  1.4
+  gasC 1.0
+}
+
+initial_condition
+{
+   temperature  T
+   xvelocity    M*sqrt(gam*gasC*T)*cos(aoa*pi/180.0)  
+   yvelocity    M*sqrt(gam*gasC*T)*sin(aoa*pi/180.0) 
+   zvelocity    0.0
+   pressure     p
+}
+
+boundary
+{
+   2 // airfoil surface
+   3
+   {
+      type         slip
+   }
+
+   1 // outer circle
+   4
+   {
+      type         farfield
+      temperature  T
+      xvelocity    M*sqrt(gam*gasC*T)*cos(aoa*pi/180.0)  
+      yvelocity    M*sqrt(gam*gasC*T)*sin(aoa*pi/180.0) 
+      zvelocity    0.0
+      pressure     p
+   }
+
+}
+
+exact_soln
+{
+   available  no
+}
+
+integrals
+{
+   force
+   {
+      airfoil
+      2
+      3
+   }
+}
+
+output
+{
+   format                vtk
+   frequency             100
+   time_stamps           1
+   use_online_stat_tool  no
+   variables
+   {
+      density
+      mach
+   }
+   surfaces
+   {
+      2
+      3
+   }
+   restart               no
+   restart_frequency     100
+   log_output            yes
+   soln_output           yes
+   save_global           yes
+   find_error            no
+}
+

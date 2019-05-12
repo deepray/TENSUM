@@ -1989,8 +1989,11 @@ void FiniteVolume::output (const unsigned int iter, bool write_variables)
    
    writer.master_write_check(write_to_master);     
    writer.output (get_proc_loc_id(),counter);
-   output_surface_sf(SAMPLE_DIR);
-   output_surface_hf(SAMPLE_DIR);
+   if(param.material.model == Material::ns)
+   {
+	   output_surface_sf(SAMPLE_DIR);
+	   output_surface_hf(SAMPLE_DIR);
+   }
    // if(param.save_mesh_Pe)
 //       output_mesh_Pe(SAMPLE_DIR);  
    
@@ -2360,6 +2363,7 @@ void FiniteVolume::solve (const int sample_id)
    
    if(param.time_mode == "steady")  // Saving final output for steady simulations
    {
+      write_to_master = true;
       time_instance[1] = elapsed_time;
       if(param.write_soln)
          output (iter);

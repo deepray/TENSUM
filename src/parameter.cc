@@ -260,7 +260,8 @@ void Parameter::read_numeric (Reader &fin)
    
    if(rnd_per_sample > 0)
    {
-      ifstream ifile(rnd_file_loc);
+      ifstream ifile;
+      ifile.open(rnd_file_loc.c_str());
       if(!ifile)
       {
          MPI_ERR("read_numeric: the random parameter file " << rnd_file_loc
@@ -288,6 +289,17 @@ void Parameter::read_material (Reader &fin)
    fin.entry ("gas_const");
    fin >> material.gas_const;
    MPI_ASSERT(material.gas_const > 0.0);
+   
+   fin.entry ("model");
+   fin >> input;
+   if(input == "euler")
+      material.model = Material::euler;
+   else if(input == "ns")
+      material.model = Material::ns;
+   else
+      MPI_ERR("read_material: unknown flow model " << input
+              << ". Possible options:\n"
+			  << " euler \n ns \n");
    
    fin.begin_section ("viscosity");
    fin.entry ("model");
@@ -337,17 +349,6 @@ void Parameter::read_material (Reader &fin)
    fin.entry ("prandtl");
    fin >> material.prandtl;
    MPI_ASSERT(material.prandtl > 0.0);
-
-   fin.entry ("model");
-   fin >> input;
-   if(input == "euler")
-      material.model = Material::euler;
-   else if(input == "ns")
-      material.model = Material::ns;
-   else
-      MPI_ERR("read_material: unknown flow model " << input
-              << ". Possible options:\n"
-			  << " euler \n ns \n");
 
 
    fin.entry ("flux");

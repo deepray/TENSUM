@@ -131,11 +131,11 @@ void Writer::output_vtk (string filename)
    vtk.open (filename.c_str());
 
    vtk << "# vtk DataFile Version 3.0" << endl;
-   vtk << "flo3d" << endl;
+   vtk << "tensum" << endl;
    vtk << "ASCII" << endl;
+   vtk << "DATASET UNSTRUCTURED_GRID" << endl;
    if(time_mode == "unsteady")
    {
-	   vtk << "DATASET UNSTRUCTURED_GRID" << endl;
 	   vtk << "FIELD FieldData 1" <<endl;
 	   vtk << "TIME 1 1 double"<<endl;
 	   vtk << time <<endl;

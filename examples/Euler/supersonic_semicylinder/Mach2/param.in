@@ -1,0 +1,129 @@
+grid
+{
+   cell   voronoi
+}
+
+numeric
+{
+   time_mode    steady
+   time_scheme  ssprk3
+   time_step    0.0
+   cfl          0.6
+   max_iter     100000
+   final_time   1.0e20
+   min_residue  1.0e-7
+   reconstruct
+   {
+      method   minmod
+   }
+   bc_scheme    weak
+   liou_fix     no
+   sample_list
+   {
+	  groups
+	  {
+	  }
+	  free_list
+	  {
+	  }   
+   }
+   rnd_file_loc    rnd_nos.dat
+   rnd_per_sample  0
+}
+
+material
+{
+   gamma       1.4
+   gas_const   1
+   model       euler
+   viscosity   
+   {
+      model    constant
+      mu_ref   0.0
+   }
+   prandtl     1.0
+   flux        kepes_tecno_roe
+   flux_par
+   {
+      alpha      0
+      beta       0
+   }
+   balance
+   {
+      switch_active  no
+      ND             YES
+      HEAT           YES
+      VISC           YES
+   }
+}
+
+constants
+{
+  T    1
+  p    1
+  gam  1.4
+  M    2
+}
+
+initial_condition
+{
+   temperature  T
+   xvelocity    M*sqrt(gam)
+   yvelocity    0.0
+   zvelocity    0.0
+   pressure     p
+}
+
+boundary
+{
+   100001 // half-cylinder
+   {
+      type         slip
+   }
+
+   100002 //outlet
+   {
+      type         outlet     
+   }
+   100003 // outer ellipse
+   {
+      type         farfield
+      temperature  T
+      xvelocity    M*sqrt(gam)
+      yvelocity    0.0
+      zvelocity    0.0
+      pressure     p
+   }
+
+}
+
+exact_soln
+{
+   available    no
+}
+
+integrals
+{
+}
+
+output
+{
+   format                vtk
+   frequency             100
+   time_stamps           1
+   use_online_stat_tool  no
+   variables
+   {
+      density
+      mach
+   }
+   surfaces
+   {
+   }
+   restart               no
+   restart_frequency     100
+   log_output            yes
+   soln_output           yes
+   save_global           yes
+   find_error            no
+}

@@ -21,6 +21,15 @@
 <li><a href="#inputparam">Parameter file for python wrapper</a></li>
 <li><a href="#partf">Partitioned file format</a></li>
 <li><a href="#param">Parameter file for main solver</a></li>
+<li><a href="#examples">Examples</a></li>
+   <ul>
+   <li><a href="#1dsod">One-dimensional shocktube problem</a></li>
+   <li><a href="#isenvort">Isentropic vortex</a></li>
+   <li><a href="#naca">Transonic flow past NACA-0012 airfoil</a></li>
+   <li><a href="#rae">Transonic flow past RAE-2822 airfoil</a></li>
+   <li><a href="#step">Flow past a forward step</a></li>
+   <li><a href="#other_tests">Other available test cases</a></li>
+   </ul>
 </ul>
 
 ##<a name="compiling"></a>Compiling the code 
@@ -39,6 +48,14 @@ The following primary exectuable files need to be generated:
 2. `tensum` in the directory src. This executes the main finite volume solver.
 
 To generate the above executables at once, use the `make` command from the TENSUM home folder. Alternatively, you can go to the individual sub-directories and use `make`. To clear the executables and object files, use `make clean`.   
+
+The unstructured meshes are generated using [Gmsh](http://gmsh.info/), which is an open-source finite element grid generator with a built-in CAD engine, and equipped with several important post-processing tools. You need to install Gmsh and ensure that you are able to access gmsh from the terminal window. In other word
+
+~~~sh
+$ gmsh
+~~~
+
+should start the Gmsh console. 
 
 <a href="#TOC" style="float: right; color:green">back to table of contents</a><br/>
 
@@ -102,11 +119,11 @@ nprocs            = 2
 
 
 ## <a name="partf"></a>Partitioned file format
-The unstructured meshes are generated using [Gmsh](http://gmsh.info/), which is an open-source finite element grid generator with a built-in CAD engine, and equipped with several important post-processing tools. An important tool implemented inside Gmsh is METIS, which is a package used for graph partitioning. We use the information provided by METIS to partition the mesh based on the cell-graph. As an example, the mesh around a NACA-0012 airfoil is partitioned into 10 sub-meshes, as shown in Figure 1, with each partition depicted by a different colour. 
+An important tool implemented inside Gmsh is METIS, which is a package used for graph partitioning. We use the information provided by METIS to partition the mesh based on the cell-graph. As an example, the mesh around a NACA-0012 airfoil is partitioned into 10 sub-meshes, as shown in Figure 1, with each partition depicted by a different colour. 
 
 <center>
 <figure>
-<img src="primary_colored.pdf">
+<img src="img/primary_colored.pdf">
 <figcaption>Fig. 1: Paritioned NACA-0012 mesh</figcaption>
 </figure>
 </center>
@@ -213,13 +230,13 @@ material
 {
    gamma       1.4
    gas_const   1.0
+   model       euler
    viscosity
    {
       model    constant
       mu_ref   0
    }
    prandtl     1.0
-   model       euler
    flux        kepes_tecno_roe
    flux_par
    {
@@ -607,7 +624,7 @@ Since the solver is at present restricted to 2D, set `<vz_fun>` to 0.
 	* `frequency`: Must be a positive integer. Sets the number of iterations/time-steps after which a solution is saved. **NOTE:** This is only used for steady flows. Furthermore, only the initial and final solution files are saved, with the final solution file being **re-written** at the end of every `frequency` number of iterations or after a valid termination of simulation. This is also true for the ensemble statistics (point-wise mean and variance) when `use_online_stat_tools` set to `yes`.
 	* `time_stamps`: Must be a positive integer. Sets the number of time stamps at which the solution is saved, excluding the initial solution. For instance, if `final_time = 4` and `time_stamps = 4`, then the solutions are saved at times $$t=0,1,2,3,4$$. This is also true for the ensemble statistics (point-wise mean and variance) when `use_online_stat_tools` set to `yes`. **NOTE:** This is only used for unsteady flows. 
 	* `use_online_stat_tools`: Set to `yes` if online statistics evaluation is needed. Else set to `no`. **NOTE:** The online statistics can be evaluated only if the number of requested samples is more than one.
-	* `variables`: Lists additional variables to save in the solution files. The currently supported variables are `mach`, `density`, `entropy` (i.e., $$\log(p/\rho^\gamma)$$)and `vorticity`. 
+	* `variables`: Lists additional variables to save in the solution files. The currently supported variables are `mach`, `density`, `entropy` (i.e., $$\log(p/\rho^\gamma)$$)and `vorticity`. If the Navier-Stokes model is used with `mu_ref` > 0, then the cell-wise `mesh_Peclet` number can also be saved to file.
 	* `surfaces`: Physical boundary tags of faces at which the solution (and skin-friction) is evaluated and saved to file. For instance
 	
 		~~~text
@@ -623,10 +640,151 @@ Since the solver is at present restricted to 2D, set `<vz_fun>` to 0.
 	* `log_output`: If set to `yes` then log files are written (WHAT FILES?)
 	* `soln_output`: If set to `yes`, then solution files are written.
 	* `save_global`: If set to `yes`, then the time evolution of total kinetic energy and total (mathematical) entropy is written to file.
-	* `save_mesh_Pe`: (move to variable?)
 	* `find_error`: If set to `yes`, the norms of the error with respect to the exact solution (`exact_soln`) at final time are written to file. **NOTE:** The error can be evaluated only if the exact solution is available.
 	
 	 
 	
 	
+<a href="#TOC" style="float: right; color:green">back to table of contents</a><br/>
+
+
+## <a name="examples"></a>Example test cases
+We now describe some of the default test cases available with the solver. A detailed description is available in the Chapters 9 and 10 of the [PhD thesis](http://deepray.github.io/thesis.pdf). In all examples, we generate the mesh and run the solver using
+
+~~~sh
+$ tensum_run input.param
+~~~
+
+### <a name="1dsod"></a>One-dimensional shocktube problem (examples/Euler/shock_tube)
+We solve for a one-dimensional shocktube probem in 2D, with the initial data given by
+
+$$(\rho,vel_x,vel_y,p)_L = (1,0.75,0,1), \quad (\rho,vel_x,vel_y,p)_R = (0.125,0,0,0.1)$$
+
+with the initial discontinuity located at $$x=0.3$$ in the domain $$[0,1] \times[0,0.04]$$. We use inlet boundary conditions on the left, outlet on the right, and periodic on the top and bottom boundaries. 
+
+By default, no sample ID is specified, and thus the solution files are saved in directory `SAMPLE_0`. To view the solution, you need to use a visualizer capable of reading partitioned VTK files. We recommend using [VisIt](https://visit.llnl.gov/). 
+Open the file `master_file.visit` in the folder `SAMPLE_0`.
+
+To extract the data along the line $$y=0.02$$, we use VisIt's command line interface (cli)
+
+~~~sh
+$ visit -cli -s line_extract SAMPLE_0
+~~~
+which will read the data in `SAMPLE_0` and create the data files with the name `line_data_k.dat`, with `k = 0,...,time_stamps` (see `param.in`). In each file, the columns represent $$x,\rho,vel_x,p$$ from left to right. NOTE: Make sure that `density` is listed in `variables` under the `output` section of `param.in`. The solution can be plotted and compared with the reference solution using the `plot_soln.py` script
+
+~~~sh
+./plot_soln SAMPLE_0/line_data_k.dat
+~~~
+
+where the value of `k` should be set equal to `time_stamps`. The script will generate and save the plots in pdf format. 
+
+<center>
+<figure>
+<img src="img/1dsod/density.pdf" width="250">
+<img src="img/1dsod/vel_x.pdf" width="250">
+<img src="img/1dsod/pressure.pdf" width="250">
+<figcaption>Fig. 2: Solution for the 1D shocktube problem</figcaption>
+</figure>
+</center>
+
+<a href="#TOC" style="float: right; color:green">back to table of contents</a><br/>
+
+### <a name="isenvort"></a>Isentropic vortex (examples/Euler/isentropic_vortex)
+
+
+This test case describes the advection of an isentropic vortex. The speed and angle of advection can be respectively controlled by changing `M` and `alpha` in the `constants` section of `param.in`.
+
+Once the solution files are generated, solution variables can plotted and saved using the `generate_plot.py` script
+
+~~~sh
+$ visit -cli -s line_extract SAMPLE_0 <variable>
+~~~
+
+where the `<variable>` name can be one of the following: `temperature`,`velx`,`vely`,`pressure` or any other variable listed in the `output` section of `param.in`. It is also possible to control the plot bounds using
+
+~~~sh
+$ visit -cli -s line_extract SAMPLE_0 <variable> <cmin> <cmax> <N>
+~~~
+
+where `<cmin>` and `<cmax>` are respectively the minumum and maximum pseudocolor/contour levels, while `<N>` is the number of contour lines.
+
+<center>
+<figure>
+<img src="img/isenvort/density_0.png" width="250">
+<img src="img/isenvort/density_2.png" width="250">
+<img src="img/isenvort/density_4.png" width="250">
+<figcaption>Fig. 3: Solution for the isentropic vortex at three different time instances</figcaption>
+</figure>
+</center>
+
+
+<a href="#TOC" style="float: right; color:green">back to table of contents</a><br/>
+
+
+### <a name="inv_naca"></a>Inviscid transonic flow past a NACA-0012 airfoil (examples/Euler/naca)
+
+
+This test case describes a **steady** transonic flow past a NACA-0012 airfoil, with Mach number 0.85 and an angle of attack of 1 degrees.
+
+Once the solution files are generated, solution variables can plotted and saved using the `generate_plot.py` script as described for the [isentropic vortex](#isenvort).
+
+The lift and drag coefficients due to pressure forces, and the Cp plots can be evaluated using
+
+~~~sh
+./plot_surface_data.py SAMPLE_0 <npart> <surf_tag_upper> <surf_tag_lower>
+~~~
+
+where `<npart>` is the number of mesh partitions created, while `<surf_tag_upper>` and `<surf_tag_lower>` are the physical tags associated with the upper and lower airfoil surface. respectively (these are also specified in the `output` section of `param.in`). For the default example, these tags are two surface tags: `<surf_tag_upper> = 2` and `<surf_tag_lower> = 3`.
+
+<center>
+<figure>
+<img src="img/naca_inv/mach.png" width="350">
+<img src="img/naca_inv/Cp.pdf" width="350">
+<figcaption>Fig. 4: Mach contour lines (left) and Cp plot (right) for flow past a NACA-0012 airfoil. Lift = 0.2914, Drag = 0.0734</figcaption>
+</figure>
+</center>
+
+<a href="#TOC" style="float: right; color:green">back to table of contents</a><br/>
+
+### <a name="inv_rae"></a>Inviscid transonic flow past a RAE-2822 airfoil (examples/Euler/rae)
+
+
+This test case describes a **steady** transonic flow past a RAE-2822 airfoil, with Mach number 0.729 and an angle of attack of 2.31 degrees.
+
+As done for for the [NACA-0012 example](#inv_naca), the solution variables can be plotted using `generate_plot.py` in VisIt's cli environment. The lift, drag and Cp plots can be evaluated using `plot_surface_data.py` with `<surf_tag_upper> = 2` and `<surf_tag_lower> = 3`.
+
+<center>
+<figure>
+<img src="img/rae_inv/mach.png" width="350">
+<img src="img/rae_inv/Cp.pdf" width="350">
+<figcaption>Fig. 5: Mach contour lines (left) and Cp plot (right) for flow past a RAE-2822 airfoil. Lift = 0.6041, Drag = 0.03195</figcaption>
+</figure>
+</center>
+
+
+<a href="#TOC" style="float: right; color:green">back to table of contents</a><br/>
+
+### <a name="step"></a>Forward step in wind tunnel (examples/Euler/forward_step)
+
+This test case is describes an inviscid supersonic flow past a step in a wind tunnel, which is impulsively started with an initial Mach number of $$M = 3$$.
+
+As done for for the [NACA-0012 example](#inv_naca), the solution variables can be plotted using `generate_plot.py` in VisIt's cli environment.
+
+<center>
+<figure>
+<img src="img/step/density_10.png" width="700">
+<figcaption>Fig. 5: Density plot for flow past a step.</figcaption>
+</figure>
+</center>
+
+
+<a href="#TOC" style="float: right; color:green">back to table of contents</a><br/>
+
+
+### <a name="other_tests"></a>Other available examples
+
+* Supersonic (steady) flow over a wedge (examples/Euler/supersonic_wedge)
+* Supersonic (steady) flow past a cylinder at Mach 2 and 10 (examples/Euler/supersonic_semicylinder)
+* Subsonic (steady) isentropic flow past a cylinder at Mach 0.3 and 10 (examples/Euler/subsonic_fullcylinder)
+
 <a href="#TOC" style="float: right; color:green">back to table of contents</a><br/>
