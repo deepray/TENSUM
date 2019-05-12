@@ -678,16 +678,14 @@ which will read the data in `SAMPLE_0` and create the data files with the name `
 
 where the value of `k` should be set equal to `time_stamps`. The script will generate and save the plots in pdf format. 
 
-<center>
 <figure>
 <p float="center">
-  <img src="img/1dsod/density.png" width="330" />
-  <img src="img/1dsod/density.png" width="330" /> 
-  <img src="img/1dsod/density.png" width="330" />
+  <img src="img/1dsod/density.png" width="250" />
+  <img src="img/1dsod/density.png" width="250" /> 
+  <img src="img/1dsod/density.png" width="250" />
 </p>
 <figcaption>Fig. 2: Solution for the 1D shocktube problem</figcaption>
 </figure>
-</center>
 
 <a href="#TOC" style="float: right; color:green">back to table of contents</a><br/>
 
@@ -710,16 +708,14 @@ $ visit -cli -s line_extract SAMPLE_0 <variable> <cmin> <cmax> <N>
 
 where `<cmin>` and `<cmax>` are respectively the minumum and maximum pseudocolor/contour levels, while `<N>` is the number of contour lines.
 
-<center>
 <figure>
 <p float="center">
-<img src="img/isenvort/density_0.png" width="330" />
-<img src="img/isenvort/density_2.png" width="330" />
-<img src="img/isenvort/density_4.png" width="330" />
+<img src="img/isenvort/density_0.png" width="250" />
+<img src="img/isenvort/density_2.png" width="250" />
+<img src="img/isenvort/density_4.png" width="250" />
 </p>
 <figcaption>Fig. 3: Solution for the isentropic vortex at three different time instances</figcaption>
 </figure>
-</center>
 
 
 <a href="#TOC" style="float: right; color:green">back to table of contents</a><br/>
@@ -740,13 +736,15 @@ The lift and drag coefficients due to pressure forces, and the Cp plots can be e
 
 where `<npart>` is the number of mesh partitions created, while `<surf_tag_upper>` and `<surf_tag_lower>` are the physical tags associated with the upper and lower airfoil surface. respectively (these are also specified in the `output` section of `param.in`). For the default example, these tags are two surface tags: `<surf_tag_upper> = 2` and `<surf_tag_lower> = 3`.
 
-<center>
+
 <figure>
-<img src="img/naca_inv/mach.png" width="350">
-<img src="img/naca_inv/Cp.png" width="350">
+<p float="center">
+<img src="img/naca_inv/mach.png" width="350" />
+<img src="img/naca_inv/Cp.png" width="350" />
+</p>
 <figcaption>Fig. 4: Mach contour lines (left) and Cp plot (right) for flow past a NACA-0012 airfoil. Lift = 0.2914, Drag = 0.0734</figcaption>
 </figure>
-</center>
+
 
 <a href="#TOC" style="float: right; color:green">back to table of contents</a><br/>
 
@@ -757,13 +755,15 @@ This test case describes a **steady** transonic flow past a RAE-2822 airfoil, wi
 
 As done for for the [NACA-0012 example](#inv_naca), the solution variables can be plotted using `generate_plot.py` in VisIt's cli environment. The lift, drag and Cp plots can be evaluated using `plot_surface_data.py` with `<surf_tag_upper> = 2` and `<surf_tag_lower> = 3`.
 
-<center>
+
 <figure>
-<img src="img/rae_inv/mach.png" width="350">
-<img src="img/rae_inv/Cp.png" width="350">
+<p float="center">
+<img src="img/rae_inv/mach.png" width="350" />
+<img src="img/rae_inv/Cp.png" width="350" />
+</p>
 <figcaption>Fig. 5: Mach contour lines (left) and Cp plot (right) for flow past a RAE-2822 airfoil. Lift = 0.6041, Drag = 0.03195</figcaption>
 </figure>
-</center>
+
 
 
 <a href="#TOC" style="float: right; color:green">back to table of contents</a><br/>
@@ -774,12 +774,14 @@ This test case is describes an inviscid supersonic flow past a step in a wind tu
 
 As done for for the [NACA-0012 example](#inv_naca), the solution variables can be plotted using `generate_plot.py` in VisIt's cli environment.
 
-<center>
+
 <figure>
+<p float="center">
 <img src="img/step/density_10.png" width="700">
+</p>
 <figcaption>Fig. 5: Density plot for flow past a step.</figcaption>
 </figure>
-</center>
+
 
 
 <a href="#TOC" style="float: right; color:green">back to table of contents</a><br/>
@@ -791,4 +793,4 @@ As done for for the [NACA-0012 example](#inv_naca), the solution variables can b
 * Supersonic (steady) flow past a cylinder at Mach 2 and 10 (examples/Euler/supersonic_semicylinder)
 * Subsonic (steady) isentropic flow past a cylinder at Mach 0.3 and 10 (examples/Euler/subsonic_fullcylinder)
 
-<a href="#TOC" style="float: right; color:green">back to table of contents</a><br/>
+<p style="text-align: right"> <a href="#TOC" >back to table of contents</a><br/> </p>
