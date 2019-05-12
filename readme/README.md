@@ -793,4 +793,4 @@ As done for for the [NACA-0012 example](#inv_naca), the solution variables can b
 * Supersonic (steady) flow past a cylinder at Mach 2 and 10 (examples/Euler/supersonic_semicylinder)
 * Subsonic (steady) isentropic flow past a cylinder at Mach 0.3 and 10 (examples/Euler/subsonic_fullcylinder)
 
-<p style="text-align: right"> <a href="#TOC" >back to table of contents</a><br/> </p>
+<p align="right"> <a href="#TOC" >back to table of contents</a><br/> </p>
