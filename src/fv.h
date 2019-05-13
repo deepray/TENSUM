@@ -368,7 +368,7 @@ class FiniteVolume
       void update_solution (const unsigned int r);			 /*!<Updates solution in RK
       													  		 step*/
       void solve (const int sample_id);						 /*!<Main solve for a sample*/
-      void compute_bounds (const unsigned long int iter);        					     /*!<Computes solution bounds*/
+      void compute_bounds ();        					     /*!<Computes solution bounds*/
       void output (bool write_variables = true);			 /*!<Writes output files*/	
       void output_restart (unsigned long int iter);						 /*!<Writes restart files*/   
       void output_surface_sf (std::string DIR);              /*!<Writes surface skin-friction*/

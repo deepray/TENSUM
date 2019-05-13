@@ -524,12 +524,12 @@ void FiniteVolume::extract_rnd_nos(int sample_id)
         rnd_file >> sid;
         if(sid == param.SAMPLE_LIST[sample_id])
         {
-            for(int i=0; i<param.rnd_per_sample; i++)
+            for(unsigned int i=0; i<param.rnd_per_sample; i++)
                 rnd_file >> rnd_nos[i];
             found = true;  
         }      
         else
-            for(int i=0; i<param.rnd_per_sample; i++)
+            for(unsigned int i=0; i<param.rnd_per_sample; i++)
                 rnd_file >> dummy;
         count++;                  
     }
@@ -868,7 +868,8 @@ void FiniteVolume::compute_gradients ()
 		 for(set<int>::iterator it=grid.intp_mpi_groupings[i].proc_list.begin();
 			 it!=grid.intp_mpi_groupings[i].proc_list.end(); ++it)
 		 {    
-			if(*it!=get_proc_id())
+			//if(*it!=get_proc_id())
+			if(SafeNeq(*it,get_proc_id()))
 			{
 				MPI_Isend(&SBUF[i].buf[0], buff_size[i], MPI_DOUBLE,*it,
 						  grid.intp_mpi_groupings[i].tag,MPI_COMM_WORLD,&s_request[i][sr_ind]);
@@ -1002,7 +1003,7 @@ void FiniteVolume::compute_gradients ()
 	  MPI_Status status;
 	  for(int i=0; i<gsize; ++i)
 	  {
-		 for(int r=0; r<r_request[i].size(); ++r)
+		 for(unsigned int r=0; r<r_request[i].size(); ++r)
 		 {
 			MPI_Wait(&r_request[i][r],&status);   
 			int ind = 0;
@@ -1022,7 +1023,7 @@ void FiniteVolume::compute_gradients ()
 	  RBUF.clear();
    
 	  for(int i=0; i<gsize; i++)
-		 for(int r=0; r<s_request[i].size(); ++r)
+		 for(unsigned int r=0; r<s_request[i].size(); ++r)
 			MPI_Wait(&s_request[i][r],&status);   
 	  SBUF.clear();      
 	  t_grad_red.add_time();
@@ -1119,8 +1120,8 @@ void FiniteVolume::compute_inviscid_residual ()
 		 state[1] = primitive[cl];
 	  
 		 Vector vel = state[0].velocity;
-		 double pre = state[0].pressure;
-		 double ent = -param.material.Density(state[0])*param.material.Entropy(state[0])/(param.material.gamma - 1.0);
+		 //double pre = state[0].pressure;
+		 //double ent = -param.material.Density(state[0])*param.material.Entropy(state[0])/(param.material.gamma - 1.0);
 	  
 		 //t_inv_bc_apply.start_time();
 		 bc.apply (grid.vertex[cl].coord, int_step_time, grid.bface[i], state);
@@ -1152,8 +1153,8 @@ void FiniteVolume::compute_inviscid_residual ()
 		 state[0] = primitive[cr];
 		 state[1] = primitive[cr];
 		 vel = state[0].velocity;
-		 pre = state[0].pressure;
-		 ent = -param.material.Density(state[0])*param.material.Entropy(state[0])/(param.material.gamma - 1.0);
+		 //pre = state[0].pressure;
+		 //ent = -param.material.Density(state[0])*param.material.Entropy(state[0])/(param.material.gamma - 1.0);
 	  
 		 //t_inv_bc_apply.start_time();
 		 bc.apply (grid.vertex[cr].coord, int_step_time, grid.bface[i], state);
@@ -1968,7 +1969,7 @@ void FiniteVolume::log_messages (const unsigned long int iter)
 	   }
    }
    if(bounds)
-      compute_bounds (iter);
+      compute_bounds ();
    t_log.add_time();   
 }
 
@@ -2095,7 +2096,7 @@ void FiniteVolume::output_var()
 //------------------------------------------------------------------------------
 // Find minimum and maximum values in the solution
 //------------------------------------------------------------------------------
-void FiniteVolume::compute_bounds (const unsigned long int iter)
+void FiniteVolume::compute_bounds ()
 {
    PrimVar prim_min;
    PrimVar prim_max;
@@ -2232,7 +2233,7 @@ void FiniteVolume::solve (const int sample_id)
    
    unsigned long int iter = last_iter;
    residual_norm_total = 1.0e20;
-   unsigned long int last_output_iter = 0;
+   //unsigned long int last_output_iter;
    
    compute_gradients ();
    
@@ -2265,12 +2266,18 @@ void FiniteVolume::solve (const int sample_id)
    if(param.time_mode == "steady")
       term_iter = iter;       
    
+   // cout<<term_iter<<endl;
+//    cout<<param.max_iter<<endl;
+//    cout<<residual_norm_total<<endl;
+//    cout<<param.min_residue<<endl;
    while (residual_norm_total > param.min_residue &&
-          term_iter < param.max_iter && 
-          elapsed_time < param.final_time && !found_stop_file)
+          SafeLess(term_iter,param.max_iter) && 
+          elapsed_time < param.final_time)// && !found_stop_file)
    {
       store_conserved_old ();
       compute_dt ();
+      
+      //cout<<term_iter<<endl;
       
       if(param.liou_fix)
       {
@@ -2311,7 +2318,7 @@ void FiniteVolume::solve (const int sample_id)
       if(param.time_mode == "steady" && iter % param.write_frequency == 0 && param.write_soln)
       {
          output ();
-         last_output_iter = iter;
+         //last_output_iter = iter;
          //found_stop_file = check_for_stop_file ();
       }
       else if(time_instance_reached && param.time_mode == "unsteady")
@@ -2319,7 +2326,7 @@ void FiniteVolume::solve (const int sample_id)
          if(param.write_soln)
 		 {
 			output ();
-			last_output_iter = iter;
+			//last_output_iter = iter;
             //found_stop_file = check_for_stop_file ();
 		 }
 		 if(param.online_stat)
@@ -2375,7 +2382,8 @@ void FiniteVolume::solve (const int sample_id)
 	  MPI_LOC_ASSERT(counter == 1);
    }
    else
-      MPI_LOC_ASSERT(counter == time_instance.size()); // counter is one more than expected for unsteady
+      //MPI_LOC_ASSERT(counter == time_instance.size()); // counter is one more than expected for unsteady
+      MPI_LOC_ASSERT(SafeEq(counter,time_instance.size()));
     
    if(param.find_error)
       compute_error_norm();
@@ -2462,7 +2470,8 @@ void FiniteVolume::run ()
 		  cout<<"  Saving sample mean and variance and second moments ...\n";
 	   if(get_proc_id() < NPART)
 	   {
-		  for(counter = 0; counter < time_instance.size(); ++counter)
+		  //for(counter = 0; counter < time_instance.size(); ++counter)
+		  for(counter = 0; SafeLess(counter,time_instance.size()); ++counter)
 		  {
 			 output_mean();
 			 output_sec_mom();

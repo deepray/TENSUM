@@ -27,7 +27,7 @@ void Material::kepes_tecno_roe_flux (const Vector& cl,
    double rhol = Density(left);
    double rhor = Density(right);
    double rho = logavg( rhol, rhor );
-   double vel2= 0.5 * (left.velocity.square() + right.velocity.square());
+   //double vel2= 0.5 * (left.velocity.square() + right.velocity.square());
    double betal = 0.5 / (gas_const * left.temperature);
    double betar = 0.5 / (gas_const * right.temperature);
    double beta = logavg(betal, betar);
@@ -46,7 +46,7 @@ void Material::kepes_tecno_roe_flux (const Vector& cl,
 //    flux.energy_flux = 0.5 * ( 1.0/((gamma-1.0)*beta) - vel2) * flux.mass_flux + 
 //                       flux.momentum_flux *  vel;
     
-   kepec_flux (left, right, normal, data, flux); 
+   kepec_flux (left, right, normal, flux); 
 
 
    if(nd_active)

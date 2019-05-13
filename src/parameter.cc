@@ -194,7 +194,7 @@ void Parameter::read_numeric (Reader &fin)
    
    fin.entry("rnd_per_sample");
    fin >> rnd_per_sample;
-   MPI_ASSERT(rnd_per_sample >= 0);
+   //MPI_ASSERT(rnd_per_sample >= 0);
    
    
    fin.end_section ();
@@ -856,11 +856,13 @@ void Parameter::rearrange_samples ()
    
    int ind_base  = 0;
    int next_ind  = ind_base;
-   for (int i=0; i < n_samples; ++i)
+   //for (int i=0; i<n_samples; ++i)
+   for (int i=0; SafeLess(i,n_samples); ++i)
    {
       DUMMY_LIST[i] = SAMPLE_LIST[next_ind];
       next_ind += N_MC_GROUPS;
-      if(next_ind >= n_samples)
+      //if(next_ind >= n_samples)
+      if(SafeMoreEq(next_ind,n_samples))
       {
          ind_base++;
          next_ind = ind_base;

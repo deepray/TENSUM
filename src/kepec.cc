@@ -10,7 +10,7 @@ using namespace std;
 void Material::kepec_flux (const PrimVar& left,
 						   const PrimVar& right,
 						   const Vector& normal,
-						   const FluxData& data,
+						   //const FluxData& data,
 						   Flux& flux) const
 {  
    double area = normal.norm();

@@ -309,7 +309,7 @@ class Material
                                    const std::vector<Vector>& ent_grads_l, 
                                    const std::vector<Vector>& ent_grads_r, 
                                    const Vector& normal, 
-                                   const FluxData& data,
+                                   //const FluxData& data,
                                    Flux& flux) const;  
                                    
       /*!
@@ -322,7 +322,7 @@ class Material
       void   kepec_flux (const PrimVar& left,
                          const PrimVar& right,
                          const Vector& normal,
-                         const FluxData& data,
+                         //const FluxData& data,
                          Flux& flux) const;                                              
       
       
@@ -336,7 +336,7 @@ class Material
       void   kep_flux   (const PrimVar& left,
                          const PrimVar& right,
                          const Vector& normal,
-                         const FluxData& data,
+                         //const FluxData& data,
                          Flux& flux) const;
       
       /*!
@@ -349,7 +349,7 @@ class Material
       void   roe_ec_flux   (const PrimVar& left,
                          const PrimVar& right,
                          const Vector& normal,
-                         const FluxData& data,
+                         //const FluxData& data,
                          Flux& flux) const;    
                          
       /*!
@@ -362,7 +362,7 @@ class Material
       void   simple_avg_flux   (const PrimVar& left,
                          const PrimVar& right,
                          const Vector& normal,
-                         const FluxData& data,
+                         //const FluxData& data,
                          Flux& flux) const;                                  
       
       /*!

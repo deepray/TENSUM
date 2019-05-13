@@ -97,7 +97,8 @@ void Writer::output (int part, int counter)
    {
 	   if(write_to_master)
 	   {
-		   for (int i=0; i<NPART; i++)
+		   //for (int i=0; i<NPART; i++)
+		   for (int i=0; SafeLess(i,NPART); i++)
 		   {
 			  filemaster = filename_comm;
 			  stringstream ss_comm;

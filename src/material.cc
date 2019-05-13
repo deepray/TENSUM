@@ -42,19 +42,19 @@ void Material::num_flux (const Vector& cl,
          kepes_tecno_roe_flux (cl,cr,left0, right0, dE_l, dE_r, normal, data, flux);
          break;
       case kepes_tecno_rusanov:
-         kepes_tecno_rusanov_flux (cl,cr,left0, right0, dE_l, dE_r, normal, data, flux);
+         kepes_tecno_rusanov_flux (cl,cr,left0, right0, dE_l, dE_r, normal, flux);
          break;   
       case kepec:
-         kepec_flux (left0, right0, normal, data, flux);
+         kepec_flux (left0, right0, normal, flux);
          break;
       case kep:
-         kep_flux (left0, right0, normal, data, flux);
+         kep_flux (left0, right0, normal, flux);
          break;
       case roe_ec:
-         roe_ec_flux (left0, right0, normal, data, flux);
+         roe_ec_flux (left0, right0, normal, flux);
          break;  
       case avg:
-         simple_avg_flux (left0, right0, normal, data, flux);
+         simple_avg_flux (left0, right0, normal, flux);
          break;       
       default:
          cout << "num_flux: unknown flux " << flux_scheme << endl;

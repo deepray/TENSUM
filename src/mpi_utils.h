@@ -8,6 +8,7 @@
 #include <set>
 #include <string>
 #include <sstream>
+#include "safe_logic.h"
 extern unsigned int NPART;
 extern unsigned int N_MC_GROUPS;
 

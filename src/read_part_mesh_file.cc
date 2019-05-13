@@ -81,7 +81,8 @@ void Grid::read_part_mesh_file(string PART_DIR,const map<int,BoundaryCondition>&
            for(unsigned int j=0;j<shared_list_size;++j)
            {
               file >> part;
-              if(part >= NPART)
+              //if(part >= NPART)
+              if(SafeMoreEq(part,NPART))
               {
                  cout<<"Error: Partition ID = "<<part<<" detected in mesh files.";
                  cout<<" Number of mesh partition mentioned in parameter file = "<<NPART<<endl;
@@ -125,7 +126,7 @@ void Grid::read_part_mesh_file(string PART_DIR,const map<int,BoundaryCondition>&
    file >> line;
    MPI_LOC_ASSERT(line=="PERIODIC")
    file >> n_periodic;
-   MPI_LOC_ASSERT(n_periodic >= 0);
+   //MPI_LOC_ASSERT(n_periodic >= 0);
    if(PERIODIC)
    {
       periodic_lists.resize(n_periodic);
@@ -162,7 +163,7 @@ void Grid::read_part_mesh_file(string PART_DIR,const map<int,BoundaryCondition>&
    file >> line;
    MPI_LOC_ASSERT(line=="FACES")  
    file >> n_face; 
-   MPI_LOC_ASSERT (n_face >= 0);
+   //MPI_LOC_ASSERT (n_face >= 0);
    if(n_face > 0)
       face.resize(n_face);
    file >> line >> n_face_total;
@@ -398,7 +399,8 @@ void Grid::read_part_mesh_file(string PART_DIR,const map<int,BoundaryCondition>&
 	  sort(dummy.vertices.begin(), dummy.vertices.end());
 	  dummy.tag = -1;
 	  intp_mpi_groupings.push_back(dummy);
-	  if(rank < NPART)
+	  //if(rank < NPART)
+	  if(SafeLess(rank,NPART))
 	     all_intp_groupings.insert(dummy.proc_list);
    }
    // PERIODIC LISTINGS
@@ -434,7 +436,8 @@ void Grid::read_part_mesh_file(string PART_DIR,const map<int,BoundaryCondition>&
 		 }
 		 dummy.tag = -1;
 		 periodic_mpi_groupings.push_back(dummy);
-		 if(rank < NPART)
+		 //if(rank < NPART)
+		 if(SafeLess(rank,NPART))
 			all_periodic_groupings.insert(dummy.proc_list);
 	  }
    }
@@ -444,17 +447,20 @@ void Grid::read_part_mesh_file(string PART_DIR,const map<int,BoundaryCondition>&
    // Sharing all groupings (inter partition)
    if(rank == 0)
    {
-      for(int i = 1; i<NPART; i++)
+      //for(int i = 1; i<NPART; i++)
+      for(int i = 1; SafeLess(i,NPART); i++)
       {
           get_all_groupings(all_intp_groupings); 
       }      
-      for(int i = 1; i<NPART; i++)
+      //for(int i = 1; i<NPART; i++)
+      for(int i = 1; SafeLess(i,NPART); i++)
       {
           tag = i;
           send_all_groupings(0,i,all_intp_groupings,tag);
       }    
    }
-   else if(rank < NPART)
+   //else if(rank < NPART)
+   else if(SafeLess(rank,NPART))
    {
       tag = rank;
       send_all_groupings(rank,0,all_intp_groupings,tag);
@@ -469,17 +475,20 @@ void Grid::read_part_mesh_file(string PART_DIR,const map<int,BoundaryCondition>&
    {
 	  if(rank == 0)
 	  {
-		 for(int i = 1; i<NPART; i++)
+		 //for(int i = 1; i<NPART; i++)
+		 for(int i = 1; SafeLess(i,NPART); i++)
 		 {
 			 get_all_groupings(all_periodic_groupings); 
 		 }     
-		 for(int i = 1; i<NPART; i++)
+		 //for(int i = 1; i<NPART; i++)
+		 for(int i = 1; SafeLess(i,NPART); i++)
 		 {
 			 tag = i;
 			 send_all_groupings(0,i,all_periodic_groupings,tag);  
 		 }    
 	  }
-	  else if(rank < NPART)
+	  //else if(rank < NPART)
+	  else if(SafeLess(rank,NPART))
 	  {
 		 tag = rank;
 		 send_all_groupings(rank,0,all_periodic_groupings,tag);
@@ -496,7 +505,8 @@ void Grid::read_part_mesh_file(string PART_DIR,const map<int,BoundaryCondition>&
    tag = 0;
    int total_share_tags = all_intp_groupings.size()*N_MC_GROUPS;
    int NPROC = get_comm_size();
-   if(rank < NPART)
+   //if(rank < NPART)
+   if(SafeLess(rank,NPART))
    {
       for(set<set<int> >::iterator its=all_intp_groupings.begin();
           its!=all_intp_groupings.end();++its) 
@@ -510,7 +520,8 @@ void Grid::read_part_mesh_file(string PART_DIR,const map<int,BoundaryCondition>&
       int n_groups = all_intp_groupings.size();
       all_intp_groupings.clear();
       
-      if(NPROC >= NPART)
+      //if(NPROC >= NPART)
+      if(SafeMoreEq(NPROC,NPART))
       {
 		 int buf[intp_mpi_groupings.size()];
 		 for(unsigned int i=0; i<intp_mpi_groupings.size(); ++i)
@@ -545,7 +556,8 @@ void Grid::read_part_mesh_file(string PART_DIR,const map<int,BoundaryCondition>&
    if(PERIODIC)
    {
       tag = total_share_tags;
-      if(rank < NPART)
+      //if(rank < NPART)
+      if(SafeLess(rank,NPART))
 	  {
 		 for(set<set<int> >::iterator its=all_periodic_groupings.begin();
 			 its!=all_periodic_groupings.end();++its) 
@@ -559,7 +571,8 @@ void Grid::read_part_mesh_file(string PART_DIR,const map<int,BoundaryCondition>&
 		 int n_groups = all_periodic_groupings.size();
 		 all_periodic_groupings.clear();
 	  
-		 if(NPROC >= NPART)
+		 //if(NPROC >= NPART)
+		 if(SafeMoreEq(NPROC,NPART))
 		 {
 			int buf[periodic_mpi_groupings.size()];
 			for(unsigned int i=0; i<periodic_mpi_groupings.size(); ++i)

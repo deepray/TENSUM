@@ -102,7 +102,7 @@ void process_command_line (int   argc,
       ++i;
    }
 
-   if(!found_input_file || !found_npart || !iloc)
+   if(!found_input_file || !found_npart || !found_loc)
       show_options ();
 }
 

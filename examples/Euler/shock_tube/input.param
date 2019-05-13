@@ -3,7 +3,7 @@
 
 # Basic paths/parameters
 mesh_file_name    = shocktube.geo
-mesh_parts        = 2
+mesh_parts        = 8
 mesh_dimension    = 2
 partition_dir_loc = .
 solver_param_file = param.in
@@ -20,5 +20,5 @@ print_bounds      = no
 verbose           = yes
 
 # Number of processors to be used in the solver.
-nprocs            = 2
+nprocs            = 8
 

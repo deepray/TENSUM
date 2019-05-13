@@ -21,7 +21,8 @@ void FiniteVolume::reduce_moments()
 	int tag;
 	for(unsigned int t=0; t<time_instance.size(); ++t)
     {
-	   if(rank < NPART)
+	   //if(rank < NPART)
+	   if(SafeLess(rank,NPART))
 	   {
 		   double DIFF[grid.n_vertex*nvars], RBUF[grid.n_vertex*nvars], RBUF2[grid.n_vertex*nvars];
 		   int n_old = param.sample_end_ind - param.sample_start_ind + 1;

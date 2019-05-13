@@ -19,7 +19,8 @@ void FiniteVolume::reduce_stat_norm()
     double SBUF_VAR[nvars*ntime], RBUF_VAR[nvars*ntime];
     
 	
-	for(unsigned int t = 0; t<ntime; ++t)
+	//for(unsigned int t = 0; t<ntime; ++t)
+	for(unsigned int t = 0; SafeLess(t,ntime); ++t)
 	{
 	   SBUF_MEAN[t*nvars + 0] = prim_mean_l1[t].temperature;
 	   SBUF_MEAN[t*nvars + 1] = prim_mean_l1[t].velocity.x;
@@ -60,7 +61,8 @@ void FiniteVolume::reduce_stat_norm()
     MPI_Allreduce(&SBUF_MEAN, &RBUF_MEAN, nvars*ntime, MPI_DOUBLE, MPI_SUM, grid.run_comm);
     MPI_Allreduce(&SBUF_VAR, &RBUF_VAR, nvars*ntime, MPI_DOUBLE, MPI_SUM, grid.run_comm);
     
-    for(unsigned int t = 0; t<ntime; ++t)
+    //for(unsigned int t = 0; t<ntime; ++t)
+    for(unsigned int t = 0; SafeLess(t,ntime); ++t)
 	{
 	   prim_mean_l1[t].temperature    = RBUF_MEAN[t*nvars + 0];
 	   prim_mean_l1[t].velocity.x     = RBUF_MEAN[t*nvars + 1];

@@ -72,9 +72,11 @@ void FiniteVolume::reduce_residual_periodic()
 		  }
 		  int sr_ind = 0;
 		  set<int>::iterator it=grid.periodic_mpi_groupings[i].proc_list.begin();
-		  for(int j=0; j<grid.periodic_mpi_groupings[i].proc_list.size();++j)
+		  //for(int j=0; j<grid.periodic_mpi_groupings[i].proc_list.size();++j)
+		  for(int j=0; SafeLess(j,grid.periodic_mpi_groupings[i].proc_list.size());++j)
 		  {    
-			 if(*it!=get_proc_id())
+			 //if(*it!=get_proc_id())
+			 if(SafeNeq(*it,get_proc_id()))
 			 {
 				 MPI_Isend(&SBUF[i].buf[0], buff_size[i], MPI_DOUBLE,*it,
 						   grid.periodic_mpi_groupings[i].tag,MPI_COMM_WORLD,&s_request[i][sr_ind]);
@@ -91,7 +93,8 @@ void FiniteVolume::reduce_residual_periodic()
 	   MPI_Status status;
 	   for(int i=0; i<gsize; i++)
 	   {
-		  for(int r=0; r<r_request[i].size(); ++r)
+		  //for(int r=0; r<r_request[i].size(); ++r)
+		  for(int r=0; SafeLess(r,r_request[i].size()); ++r)
 		  {
 			 MPI_Wait(&r_request[i][r],&status);   
 			 int ind = 0;
@@ -110,7 +113,8 @@ void FiniteVolume::reduce_residual_periodic()
 	   RBUF.clear();
    
 	   for(int i=0; i<gsize; i++)
-		  for(int r=0; r<s_request[i].size(); ++r)
+		  //for(int r=0; r<s_request[i].size(); ++r)
+		  for(int r=0; SafeLess(r,s_request[i].size()); ++r)
 			 MPI_Wait(&s_request[i][r],&status);   
 	   SBUF.clear(); 
 	}   
