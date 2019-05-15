@@ -72,7 +72,7 @@ def gen_and_part_mesh(d):
     
     comline = "grid_part -D " + dim + " -I " + mesh_file+ " -P " + nparts+\
               " -L " + part_dir_loc 
-    print "  --- Partitioning mesh into ", nparts, " parts\n\n"
+    #print "  --- Partitioning mesh into ", nparts, " parts\n\n"
     os.system(comline)
 
 def init_solver(d):
@@ -105,7 +105,7 @@ def init_solver(d):
     if(rs(d['verbose']) == 'yes'):
        v_flag = "-v"
     
-    print "  Starting simulator  "
+    #print "  Starting simulator  "
     comline = "mpirun -n " + nprocs + " " + solver_exe \
               + " -npart " + nparts + " " \
               + " -L " + part_dir_loc + " " \
@@ -123,7 +123,7 @@ script, input = argv
 param_map = read_parameter(input)
 
 print "---------------------------------------------------------------------------\n"
-print " Initiating requested tasks: \n"
+#print " Initiating requested tasks: \n"
 
 # execution of main operations
 if rs(param_map['gen_mesh_and_part']) == 'yes':

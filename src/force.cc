@@ -13,6 +13,8 @@ void FiniteVolume::create_force_face_list ()
 {
    if(param.force_data.size() == 0)
       return;
+      
+   cout<<NPART<<endl;   
 
    MPI_DISP("\n  Creating list of faces for force computation",verbose);   
 
@@ -196,6 +198,14 @@ void FiniteVolume::compute_forces (unsigned long int iter)
 		  MPI_Allreduce(&visc_force[i].value.x,&visc_force_x,1,MPI_DOUBLE,MPI_SUM,grid.run_comm);
 		  MPI_Allreduce(&visc_force[i].value.y,&visc_force_y,1,MPI_DOUBLE,MPI_SUM,grid.run_comm);
       }
+      else
+      {
+          inv_force_x  = inv_force[i].value.x;
+          inv_force_y  = inv_force[i].value.y;
+          visc_force_x = visc_force[i].value.x;
+          visc_force_y = visc_force[i].value.y;
+      }
+      
       if(check_group_base())
       {
 		  force_file << inv_force_x << "  " 

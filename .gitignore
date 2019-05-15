@@ -2,6 +2,7 @@
 *.o
 grid_gen/grid_part
 src/tensum
+src/ARCH
 *.log
 examples/**/**/MESH_DATA/
 examples/**/**/PARTITION/

@@ -28,6 +28,8 @@
    <li><a href="#naca">Transonic flow past NACA-0012 airfoil</a></li>
    <li><a href="#rae">Transonic flow past RAE-2822 airfoil</a></li>
    <li><a href="#step">Flow past a forward step</a></li>
+   <li><a href="#flatplate">Laminar flat-plate boundary layer</a></li>
+   <li><a href="#uqsod">UQ with the shocktube problem</a></li>
    <li><a href="#other_tests">Other available test cases</a></li>
    </ul>
 </ul>
@@ -649,7 +651,7 @@ Since the solver is at present restricted to 2D, set `<vz_fun>` to 0.
 
 
 ## <a name="examples"></a>Example test cases
-We now describe some of the default test cases available with the solver. A detailed description is available in the Chapters 9 and 10 of the [PhD thesis](http://deepray.github.io/thesis.pdf). In all examples, we generate the mesh and run the solver using
+We now describe some of the default test cases available with the solver. A detailed description is available in the Chapters 9 and 10 of the [PhD thesis](http://deepray.github.io/thesis.pdf), and the published [inviscid](http://dx.doi.org/10.4208/cicp.scpde14.43s) and [viscous](http://www.sciencedirect.com/science/article/pii/S009630031730471X) flow papers. In all examples, we generate the mesh and run the solver using
 
 ~~~sh
 $ tensum_run input.param
@@ -660,7 +662,7 @@ We solve for a one-dimensional shocktube probem in 2D, with the initial data giv
 
 $$(\rho,vel_x,vel_y,p)_L = (1,0.75,0,1), \quad (\rho,vel_x,vel_y,p)_R = (0.125,0,0,0.1)$$
 
-with the initial discontinuity located at $$x=0.3$$ in the domain $$[0,1] \times[0,0.04]$$. We use inlet boundary conditions on the left, outlet on the right, and periodic on the top and bottom boundaries. 
+with the initial discontinuity located at $$x_c=0.3$$ in the domain $$[0,1] \times[0,0.04]$$. We use inlet boundary conditions on the left, outlet on the right, and periodic on the top and bottom boundaries. 
 
 By default, no sample ID is specified, and thus the solution files are saved in directory `SAMPLE_0`. To view the solution, you need to use a visualizer capable of reading partitioned VTK files. We recommend using [VisIt](https://visit.llnl.gov/). 
 Open the file `master_file.visit` in the folder `SAMPLE_0`.
@@ -681,8 +683,8 @@ where the value of `k` should be set equal to `time_stamps`. The script will gen
 <figure>
 <p float="center">
   <img src="img/1dsod/density.png" width="250" />
-  <img src="img/1dsod/density.png" width="250" /> 
-  <img src="img/1dsod/density.png" width="250" />
+  <img src="img/1dsod/vel_x.png" width="250" /> 
+  <img src="img/1dsod/pressure.png" width="250" />
 </p>
 <figcaption>Fig. 2: Solution for the 1D shocktube problem</figcaption>
 </figure>
@@ -736,6 +738,7 @@ The lift and drag coefficients due to pressure forces, and the Cp plots can be e
 
 where `<npart>` is the number of mesh partitions created, while `<surf_tag_upper>` and `<surf_tag_lower>` are the physical tags associated with the upper and lower airfoil surface. respectively (these are also specified in the `output` section of `param.in`). For the default example, these tags are two surface tags: `<surf_tag_upper> = 2` and `<surf_tag_lower> = 3`.
 
+The lift and drag coefficients are evaluated by reading the data from the file `force.dat`. The quanitites $$x,y,T,p,v_x,v_y,v_z$$ on the surface are saved in the partitioned files named as `v_0001_<part>_<surf_tag>.dat`, where $$T$$ us the temperature and `<part>` is the mesh partition id.
 
 <figure>
 <p float="center">
@@ -782,6 +785,151 @@ As done for for the [NACA-0012 example](#inv_naca), the solution variables can b
 <figcaption>Fig. 6: Density plot for flow past a step.</figcaption>
 </figure>
 
+
+
+<p align="right"> <a href="#TOC" >back to table of contents</a><br/> </p>
+
+### <a name="flatplate"></a>Laminar flat-plate boundary layer (examples/NavierStokes/flat_plate)
+
+This problem corresponds to a **steady** viscous flow over a flat plate which leads to the development of a boundary layer near the plate surface.The computational domain is taken as $$[0, 1.5] \times [0, 0.25]$$. There is an initial inlet portion of the domain of length 0.5 units on which slip boundary condition is imposed, followed by the no-slip boundary corresponding to the flat plate of length 1 unit. Adiabatic conditions are used on the flat plate boundary, with the Reynolds number corresponding to the plate length being $$10^5$$. The free-stream values used for the simulations are $$p_\infty = 8610$$, $$T_\infty = 300$$, $$v_{x,\infty} = 34.7189$$, $$v_{y,\infty} = 0$$, with the Prandtl number $$0.72$$ and gas constant $$R=287$$. The flow is initialized using the free-stream values, which has a Mach number of 0.1.
+
+The approximated velocity profiles are compared with the Blasius semi-analytical solution in the standard non-dimensional units. These results are taken on the vertical line through the point on the plate, at a distance $$x=0.8$$ from the plate tip. The velocity profiles can be extracted using
+
+~~~sh
+visit -cli -s line_extract.py SAMPLE_0
+~~~
+
+which will save the data in the file `SAMPLE_0/line_data.dat`. The velocity profiles can be plotted and compared with the Blasius solution using
+
+~~~sh
+./plot_velocity_profile.py SAMPLE_0/line_data.dat
+~~~
+
+We show these plots in Figure 7, where $$Re_x$$ is the Reynolds number corresponding to the plate length at $$x=0.8$$, while $$\psi = y \sqrt{0.5 Re_x}/x$$ is the non-dimensionalized vertical distance from the plate at $$x=0.8$$. $$U_\infty$$ is the free-stream x-velocity.
+
+<figure>
+<p float="center">
+<img src="img/step/density_10.png" width="700">
+</p>
+<figcaption>Fig. 7: Laminar flat plate boundary layer: (left) Stream-wise velocity, (right) Vertical velocity. </figcaption>
+</figure>
+
+
+
+<p align="right"> <a href="#TOC" >back to table of contents</a><br/> </p>
+
+
+### <a name="uqsod"></a>UQ with the shocktube problem (examples/UQ/shocktube)
+
+Consider the [shocktube](#1dsod) problem described earlier. We demonstrate how one can introduced random perturbations to the initial conditions of the form
+
+$$x_c \leftarrow x_c(1 + \delta(\omega_1 - 0.5)),\\
+T_L \leftarrow T_L(1 + \delta(\omega_2 - 0.5)),\\
+T_R \leftarrow T_R(1 + \delta(\omega_3 - 0.5)),\\
+v_{x,L} \leftarrow v_{x,L}(1 + \delta(\omega_4 - 0.5)),\\
+p_L \leftarrow p_L(1 + \delta(\omega_5 - 0.5)),\\
+p_R \leftarrow p_R(1 + \delta(\omega_6 - 0.5))$$
+
+where $$\omega_i$$ are chosen randomly from the interval $$[0,1]$$, while $$\delta$$ controls the amount of perturbation from the base states. The random numbers are pre-generated for a large number of samples, and saved in the file `urnd_nos.txt` (see description of `param.in` for details on the format). The default `urnd_nos.txt` file available for this example specifies 6 random numbers for sample IDs 0 to 1000. This is specified in `numeric` section of `param.in` in the following way:
+
+~~~text
+sample_list
+{
+  groups
+  { 
+   0 10
+  }
+  free_list
+  {
+  }   
+}
+rnd_file_loc    urnd_nos.txt
+rnd_per_sample  6
+~~~
+
+Note that the sample IDs mentioned in the `sample_list` must be listed in `urnd_nos.txt`.
+
+
+The random number are introduced using the function `pert(<type>,x,y,<k>`, where `<type>` sets the type of perturbation, `x,y` are the $$(x,y)$$ coordinated scaled to lie in $$[0,1]$$,  and `<k>` is an additional perturbation parameter. 
+
+For the current problem, choose the perturbation function as `pert(4,0,0,k)`, which will simply pick the k-th random number available in `urand_nos.dat` for a given sample. The inital and boundary conditions are set as
+
+~~~text
+constants
+{
+   xc    0.3
+   Tl    1.0 
+   Tr    0.8
+   ul    0.75
+   ur    0.0
+   pl    1.0
+   pr    0.1
+   dd    0.1
+   
+}
+initial_condition
+{
+   temperature  (x < xc*(1+dd*(pert(4,0,0,1)-0.5)) )*Tl*(1+dd*(pert(4,0,0,2)-0.5)) + (x >= xc*(1+dd*(pert(4,0,0,1)-0.5)) )*Tr*(1+dd*(pert(4,0,0,3)-0.5))
+   xvelocity    (x < xc*(1+dd*(pert(4,0,0,1)-0.5)) )*ul*(1+dd*(pert(4,0,0,4)-0.5)) + (x >= xc*(1+dd*(pert(4,0,0,1)-0.5)) )*ur
+   yvelocity    0.0
+   zvelocity    0.0
+   pressure     (x < xc*(1+dd*(pert(4,0,0,1)-0.5)) )*pl*(1+dd*(pert(4,0,0,5)-0.5)) + (x >= xc*(1+dd*(pert(4,0,0,1)-0.5)) )*pr*(1+dd*(pert(4,0,0,6)-0.5))
+}
+boundary
+{
+   100001 // inlet boundary
+   {
+      type         inlet
+      temperature  (x < xc*(1+dd*(pert(4,0,0,1)-0.5)) )*Tl*(1+dd*(pert(4,0,0,2)-0.5)) + (x >= xc*(1+dd*(pert(4,0,0,1)-0.5)) )*Tr*(1+dd*(pert(4,0,0,3)-0.5))
+	  xvelocity    (x < xc*(1+dd*(pert(4,0,0,1)-0.5)) )*ul*(1+dd*(pert(4,0,0,4)-0.5)) + (x >= xc*(1+dd*(pert(4,0,0,1)-0.5)) )*ur
+	  yvelocity    0.0
+	  zvelocity    0.0
+	  pressure     (x < xc*(1+dd*(pert(4,0,0,1)-0.5)) )*pl*(1+dd*(pert(4,0,0,5)-0.5)) + (x >= xc*(1+dd*(pert(4,0,0,1)-0.5)) )*pr*(1+dd*(pert(4,0,0,6)-0.5))
+   }
+   100002 // outlet boundary
+   {
+      type       outlet
+   }
+
+   100003
+   100004
+   {
+      type        periodic
+   }
+}
+~~~
+
+Once the solution for all the samples IDs have been generated, the data along the line $$y=0.02$$ can be extracted using
+
+~~~sh
+$ visit -cli -s line_extract <sample_start> <sample_end>
+~~~
+
+for all samples with IDs `<sample_start>` to `<sample_end>`. The various sample solutions and the pointwise statistics can be plotted using
+
+~~~sh
+./plot_soln.py <sample_start> <sample_end> <t_instance>
+~~~
+
+where `<t_instance>` can be set as an integer value between 0 and `time_stamps` (see `output` section of `param.in`).
+
+<figure>
+<p float="center">
+  <img src="img/1dsod_uq/density_samples.png" width="250" />
+  <img src="img/1dsod_uq/vel_x_samples.png" width="250" /> 
+  <img src="img/1dsod_uq/pressure_samples.png" width="250" />
+</p>
+<figcaption>Fig. 8: All samples for 1D shocktube problem</figcaption>
+</figure>
+
+<figure>
+<p float="center">
+  <img src="img/1dsod_uq/density_stats.png" width="250" />
+  <img src="img/1dsod_uq/vel_x_stats.png" width="250" /> 
+  <img src="img/1dsod_uq/pressure_stats.png" width="250" />
+</p>
+<figcaption>Fig. 9: Statistics for 1D shocktube problem</figcaption>
+</figure>
 
 
 <p align="right"> <a href="#TOC" >back to table of contents</a><br/> </p>

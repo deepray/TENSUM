@@ -11,7 +11,7 @@ extern vector <double> rnd_nos;  // This corresponds to the vector of random num
 double PERT1(const double* input); 
 double PERT2(const double* input); 
 double PERT3(const double* input);     
-//double PERT4(const double* input);                                  
+double PERT4(const double* input);                                  
 
 double PERT(const double* input)
 {
@@ -35,11 +35,11 @@ double PERT(const double* input)
          pert_val = PERT3(s_input);
          break;
       } 
-      // case 4:
-//       {
-//          pert_val = PERT4(s_input);
-//          break;
-//       }   
+      case 4:
+      {
+         pert_val = PERT4(s_input);
+         break;
+      }   
       default:
          MPI_LOC_ERR("Unknown perturbation type: " << pert_type);
    }
@@ -182,6 +182,28 @@ double PERT3(const double* input)
 		 pert_val += (a[i]/sum)*sin(2*i*M_PI*y + b[i]);
    }   
    //cout<<pert_val<<endl;     
+   return pert_val;   
+}
+
+//------------------------------------------------------------------------------
+// 	Simple perturbation. The perturbation parameter represents the random number
+//  to be extracted from the all the numbers available for this particular
+//  sample run. Note that this must be <= rnd_nos.size() and greater than 0.
+//   The x and y input values are simply ignored.
+//------------------------------------------------------------------------------    
+double PERT4(const double* input)
+{
+   int id = input[2];
+   double pert_val = 0.0;
+   if(rnd_nos.size() > 0)
+   {
+      if(id >= 1 && SafeLessEq(id, rnd_nos.size())) 
+      {
+          pert_val = rnd_nos[id-1];
+      }    
+      else
+          MPI_LOC_ERR("INSUFFICIENT SIZE OF RANDOM ARRAY FOR PERT4!");    
+   }       
    return pert_val;   
 }
 
