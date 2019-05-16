@@ -9,7 +9,7 @@ numeric
    time_scheme  ssprk3
    time_step    0.0
    cfl          0.4
-   max_iter     100000
+   max_iter     1000000
    final_time   1.0e20
    min_residue  1.0e-8
    reconstruct
@@ -39,7 +39,7 @@ material
    viscosity
    {
       model    constant  
-      mu_ref   3.5e-5
+      mu_ref   3.47189e-5
    }
    prandtl     0.72
    flux        kepes_tecno_roe

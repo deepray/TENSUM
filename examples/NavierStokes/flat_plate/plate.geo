@@ -2,11 +2,11 @@ l = 0.5; // initial length
 L = 1.0; // plate length
 H = 0.25;// height
 
-n1 = 50;  // normal to BL
-n2 = 50;  // along plate
+n1 = 80;  // normal to BL
+n2 = 80;  // along plate
 p  = 1.1; // geometric progression
 
-n3 = 20;
+n3 = 30;
 
 // First cell height
 dh = H*(p - 1)/(p^n1 - 1);
