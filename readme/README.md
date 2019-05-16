@@ -175,9 +175,9 @@ In the above partition file
  * `<on_boundary>` is set to 1 if the vertex is on the domain boundary. Else it is set to 0.
  * If the vertex is a ghost vertex, then `<num_shared>` is set to 1 and `<shared_id>` is the index of the current paritition.
 * If the mesh has periodic boundaries, then additional information on periodic vertices is also mentioned in the file. The various periodic boundary vertices of the mesh are grouped into sets, with all vertices within a set being periodic to each other. These sets are indexed globally (starting from 0). A partition is said to be **associated** with a given periodic set, if at least one of the vertices in the set is an active vertex in the partition. For each partition, `<num_periodic_sets>` is the number of periodic sets the given parition is associated with. For each such periodic set $$P_i$$ associated to the partition, the following information is given in the partition file.
- * `<Pi_tag>` is the index of the periodic set $$P_i$$.
- * `<Pij>` is the subset of the periodic set $$P_i$$, listing those vertices which are active in the current partition. `<num_Pij>` is the size of `<Pij>`.
- * `<Li>` is the list of all partitions asscoiated with the periodic set $$P_i$$, with `<num_Li>` being the size of this list.
+ * `<Pi_tag>` is the index of the periodic set ![Pi](https://latex.codecogs.com/gif.latex?P_i).
+ * `<Pij>` is the subset of the periodic set ![Pi](https://latex.codecogs.com/gif.latex?P_i), listing those vertices which are active in the current partition. `<num_Pij>` is the size of `<Pij>`.
+ * `<Li>` is the list of all partitions asscoiated with the periodic set ![Pi](https://latex.codecogs.com/gif.latex?P_i), with `<num_Li>` being the size of this list.
 * The boundary face of the mesh are also paritioned, with `<num_loc_bfaces>` being the number of boundary faces in the given partition, while `<num_total_bfaces>` being the total number of boundary face in the mesh. (**NOTE:** Boundary faces listed in the partition file are always belong to active elements). Each boundary face of a partition has the following information associated with it
  * `<ftag>` is the physical boundary tag of the boundary of which the face is a part of. These tags are defined by the user in the Gmsh geometry file of the mesh, and used to distinguish between different boundary types.
  * `<face_vertex_list>` is the list of global indices of vertices forming the face.
@@ -450,7 +450,9 @@ output
 			  }
 			  ~~~
 		where `<mu_val>` must be a non-negative number.	  
-		* Sutherland model: $$\mu(T) = \mu_{ref} \frac{T^{3/2}}{T+T_{ref}}$$
+		* Sutherland model: 
+		  
+		  ![sumodel](https://latex.codecogs.com/gif.latex?%5Cmu%28T%29%20%3D%20%5Cmu_%7Bref%7D%20%5Cfrac%7BT%5E%7B3/2%7D%7D%7BT&plus;T_%7Bref%7D%7D)  
 		
 			  ~~~text
 			  {
@@ -461,7 +463,9 @@ output
 			  ~~~
 		where `<mu_val>` and `<T_val>` are positive numbers.
 		
-		* Power law: $$\mu(T) = \mu_{ref} \left(\frac{T}{T_{ref}}\right)^\omega$$
+		* Power law: 
+		
+		  ![plaw](https://latex.codecogs.com/gif.latex?%5Cmu%28T%29%20%3D%20%5Cmu_%7Bref%7D%20%5Cleft%28%5Cfrac%7BT%7D%7BT_%7Bref%7D%7D%5Cright%29%5E%5Comega)
 		
 			  ~~~text
 			  {
