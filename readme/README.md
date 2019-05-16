@@ -174,7 +174,7 @@ In the above partition file
  * `<shared_id>` is the list of indices of all paritions (including the current one) **actively** sharing the given vertex.
  * `<on_boundary>` is set to 1 if the vertex is on the domain boundary. Else it is set to 0.
  * If the vertex is a ghost vertex, then `<num_shared>` is set to 1 and `<shared_id>` is the index of the current paritition.
-* If the mesh has periodic boundaries, then additional information on periodic vertices is also mentioned in the file. The various periodic boundary vertices of the mesh are grouped into sets, with all vertices within a set being periodic to each other. These sets are indexed globally (starting from 0). A partition is said to be **associated** with a given periodic set, if at least one of the vertices in the set is an active vertex in the partition. For each partition, `<num_periodic_sets>` is the number of periodic sets the given parition is associated with. For each such periodic set $$P_i$$ associated to the partition, the following information is given in the partition file.
+* If the mesh has periodic boundaries, then additional information on periodic vertices is also mentioned in the file. The various periodic boundary vertices of the mesh are grouped into sets, with all vertices within a set being periodic to each other. These sets are indexed globally (starting from 0). A partition is said to be **associated** with a given periodic set, if at least one of the vertices in the set is an active vertex in the partition. For each partition, `<num_periodic_sets>` is the number of periodic sets the given parition is associated with. For each such periodic set ![Pi](https://latex.codecogs.com/gif.latex?P_i) associated to the partition, the following information is given in the partition file.
  * `<Pi_tag>` is the index of the periodic set ![Pi](https://latex.codecogs.com/gif.latex?P_i).
  * `<Pij>` is the subset of the periodic set ![Pi](https://latex.codecogs.com/gif.latex?P_i), listing those vertices which are active in the current partition. `<num_Pij>` is the size of `<Pij>`.
  * `<Li>` is the list of all partitions asscoiated with the periodic set ![Pi](https://latex.codecogs.com/gif.latex?P_i), with `<num_Li>` being the size of this list.
@@ -489,10 +489,10 @@ output
 	* `flux_par`: Use to set the parameters proposed by Ismail and Roe to correct the dissipation operator and ensure the scheme is [entropy consistent](https://www.sciencedirect.com/science/article/pii/S0021999109002113). `alpha` and `beta` must be non-negative numbers. Set both these parameters to 0 to disable the correction. 
 	* `balance`: These flags are useful in studying the balancing effects of artificial viscosity in the inviscid flux, the physical dissiaption from the stress tensors and the heat flux. To activate these switches set `switch_active` to `yes`.
 		* `ND`: Set as `yes` to enable artificial viscosity in the `kepes_tecno` fluxes. Setting this to no is equivalent to using `kepec`.
-		* `HEAT`: Set as `yes` to enable the heat flux of Navier-Stokes. The heat flux is controlled by the coefficient of heat conductance $$\kappa$$. If the switch is set to `no`, then $$\kappa$$ is taken to be null. 
-		* `VISC`: Set as `yes` to enable the viscous effects associated with the stress tensor for Navier-Stokes. This is controlled by the coefficient of viscosity $$\mu$$. If the switch is set to `no`, then $$\kappa$$ is taken to be null. **NOTE:** $$\kappa$$ depends on $$\mu$$. If `HEAT` is switched on and `VISC` is switched off, then $$\kappa$$ is first determined from the non-zero value of $$\mu$$, following which $$\mu$$ is set to 0.
+		* `HEAT`: Set as `yes` to enable the heat flux of Navier-Stokes. The heat flux is controlled by the coefficient of heat conductance ![kappa](https://latex.codecogs.com/gif.latex?%5Ckappa). If the switch is set to `no`, then ![kappa](https://latex.codecogs.com/gif.latex?%5Ckappa) is taken to be null. 
+		* `VISC`: Set as `yes` to enable the viscous effects associated with the stress tensor for Navier-Stokes. This is controlled by the coefficient of viscosity ![mu](https://latex.codecogs.com/gif.latex?%5Cmu). If the switch is set to `no`, then ![kappa](https://latex.codecogs.com/gif.latex?%5Ckappa) is taken to be null. **NOTE:** ![kappa](https://latex.codecogs.com/gif.latex?%5Ckappa) depends on ![mu](https://latex.codecogs.com/gif.latex?%5Cmu). If `HEAT` is switched on and `VISC` is switched off, then ![kappa](https://latex.codecogs.com/gif.latex?%5Ckappa) is first determined from the non-zero value of ![mu](https://latex.codecogs.com/gif.latex?%5Cmu), following which ![mu](https://latex.codecogs.com/gif.latex?%5Cmu) is set to 0.
 		
-* Section `constant`: Lists the various constants needed to describe the initial and boundary conditions. The value of $$\pi$$ is already defined in the code, and can be called using the name `M_PI`.
+* Section `constant`: Lists the various constants needed to describe the initial and boundary conditions. The value of ![pi](https://latex.codecogs.com/gif.latex?%5Cpi) is already defined in the code, and can be called using the name `M_PI`.
 		  
 * Section `initial_condition`: Specifies the initial profiles for temperatue, velocity and pressure of the flow. These are prescribed (in order) as
 
@@ -628,9 +628,9 @@ Since the solver is at present restricted to 2D, set `<vz_fun>` to 0.
 * Section `output`: Sets various parameters controlling the output to screen and save files.
 	* `format`: Sets the format for the solution save files. Currently only `vtk` is supported. 
 	* `frequency`: Must be a positive integer. Sets the number of iterations/time-steps after which a solution is saved. **NOTE:** This is only used for steady flows. Furthermore, only the initial and final solution files are saved, with the final solution file being **re-written** at the end of every `frequency` number of iterations or after a valid termination of simulation. This is also true for the ensemble statistics (point-wise mean and variance) when `use_online_stat_tools` set to `yes`.
-	* `time_stamps`: Must be a positive integer. Sets the number of time stamps at which the solution is saved, excluding the initial solution. For instance, if `final_time = 4` and `time_stamps = 4`, then the solutions are saved at times $$t=0,1,2,3,4$$. This is also true for the ensemble statistics (point-wise mean and variance) when `use_online_stat_tools` set to `yes`. **NOTE:** This is only used for unsteady flows. 
+	* `time_stamps`: Must be a positive integer. Sets the number of time stamps at which the solution is saved, excluding the initial solution. For instance, if `final_time = 4` and `time_stamps = 4`, then the solutions are saved at times t=0,1,2,3,4. This is also true for the ensemble statistics (point-wise mean and variance) when `use_online_stat_tools` set to `yes`. **NOTE:** This is only used for unsteady flows. 
 	* `use_online_stat_tools`: Set to `yes` if online statistics evaluation is needed. Else set to `no`. **NOTE:** The online statistics can be evaluated only if the number of requested samples is more than one.
-	* `variables`: Lists additional variables to save in the solution files. The currently supported variables are `mach`, `density`, `entropy` (i.e., $$\log(p/\rho^\gamma)$$)and `vorticity`. If the Navier-Stokes model is used with `mu_ref` > 0, then the cell-wise `mesh_Peclet` number can also be saved to file.
+	* `variables`: Lists additional variables to save in the solution files. The currently supported variables are `mach`, `density`, `entropy` (i.e., ![s](https://latex.codecogs.com/gif.latex?%5Clog%28p/%5Crho%5E%5Cgamma%29))and `vorticity`. If the Navier-Stokes model is used with `mu_ref` > 0, then the cell-wise `mesh_Peclet` number can also be saved to file.
 	* `surfaces`: Physical boundary tags of faces at which the solution (and skin-friction) is evaluated and saved to file. For instance
 	
 		~~~text
@@ -664,19 +664,19 @@ $ tensum_run input.param
 ### <a name="1dsod"></a>One-dimensional shocktube problem (examples/Euler/shock_tube)
 We solve for a one-dimensional shocktube probem in 2D, with the initial data given by
 
-$$(\rho,vel_x,vel_y,p)_L = (1,0.75,0,1), \quad (\rho,vel_x,vel_y,p)_R = (0.125,0,0,0.1)$$
+![icsod](https://latex.codecogs.com/gif.latex?%28%5Crho%2Cvel_x%2Cvel_y%2Cp%29_L%20%3D%20%281%2C0.75%2C0%2C1%29%2C%20%5Cquad%20%28%5Crho%2Cvel_x%2Cvel_y%2Cp%29_R%20%3D%20%280.125%2C0%2C0%2C0.1%29)
 
-with the initial discontinuity located at $$x_c=0.3$$ in the domain $$[0,1] \times[0,0.04]$$. We use inlet boundary conditions on the left, outlet on the right, and periodic on the top and bottom boundaries. 
+with the initial discontinuity located at ![xc](https://latex.codecogs.com/gif.latex?x_c%3D0.3) in the domain ![domsod](https://latex.codecogs.com/gif.latex?%5B0%2C1%5D%20%5Ctimes%5B0%2C0.04%5D). We use inlet boundary conditions on the left, outlet on the right, and periodic on the top and bottom boundaries. 
 
 By default, no sample ID is specified, and thus the solution files are saved in directory `SAMPLE_0`. To view the solution, you need to use a visualizer capable of reading partitioned VTK files. We recommend using [VisIt](https://visit.llnl.gov/). 
 Open the file `master_file.visit` in the folder `SAMPLE_0`.
 
-To extract the data along the line $$y=0.02$$, we use VisIt's command line interface (cli)
+To extract the data along the line y=0.02, we use VisIt's command line interface (cli)
 
 ~~~sh
 $ visit -cli -s line_extract SAMPLE_0
 ~~~
-which will read the data in `SAMPLE_0` and create the data files with the name `line_data_k.dat`, with `k = 0,...,time_stamps` (see `param.in`). In each file, the columns represent $$x,\rho,vel_x,p$$ from left to right. NOTE: Make sure that `density` is listed in `variables` under the `output` section of `param.in`. The solution can be plotted and compared with the reference solution using the `plot_soln.py` script
+which will read the data in `SAMPLE_0` and create the data files with the name `line_data_k.dat`, with `k = 0,...,time_stamps` (see `param.in`). In each file, the columns represent ![data](https://latex.codecogs.com/gif.latex?x%2C%5Crho%2Cvel_x%2Cp) from left to right. NOTE: Make sure that `density` is listed in `variables` under the `output` section of `param.in`. The solution can be plotted and compared with the reference solution using the `plot_soln.py` script
 
 ~~~sh
 ./plot_soln SAMPLE_0/line_data_k.dat
@@ -742,7 +742,7 @@ The lift and drag coefficients due to pressure forces, and the Cp plots can be e
 
 where `<npart>` is the number of mesh partitions created, while `<surf_tag_upper>` and `<surf_tag_lower>` are the physical tags associated with the upper and lower airfoil surface. respectively (these are also specified in the `output` section of `param.in`). For the default example, these tags are two surface tags: `<surf_tag_upper> = 2` and `<surf_tag_lower> = 3`.
 
-The lift and drag coefficients are evaluated by reading the data from the file `force.dat`. The quanitites $$x,y,T,p,v_x,v_y,v_z$$ on the surface are saved in the partitioned files named as `v_0001_<part>_<surf_tag>.dat`, where $$T$$ us the temperature and `<part>` is the mesh partition id.
+The lift and drag coefficients are evaluated by reading the data from the file `force.dat`. The quanitites ![surface](https://latex.codecogs.com/gif.latex?x%2Cy%2CT%2Cp%2Cv_x%2Cv_y%2Cv_z) on the surface are saved in the partitioned files named as `v_0001_<part>_<surf_tag>.dat`, where ![temp](https://latex.codecogs.com/gif.latex?T) is the temperature and `<part>` is the mesh partition id.
 
 <figure>
 <p float="center">
@@ -777,7 +777,7 @@ As done for for the [NACA-0012 example](#inv_naca), the solution variables can b
 
 ### <a name="step"></a>Forward step in wind tunnel (examples/Euler/forward_step)
 
-This test case is describes an inviscid supersonic flow past a step in a wind tunnel, which is impulsively started with an initial Mach number of $$M = 3$$.
+This test case is describes an inviscid supersonic flow past a step in a wind tunnel, which is impulsively started with an initial Mach number of M = 3.
 
 As done for for the [NACA-0012 example](#inv_naca), the solution variables can be plotted using `generate_plot.py` in VisIt's cli environment.
 
@@ -795,9 +795,9 @@ As done for for the [NACA-0012 example](#inv_naca), the solution variables can b
 
 ### <a name="flatplate"></a>Laminar flat-plate boundary layer (examples/NavierStokes/flat_plate)
 
-This problem corresponds to a **steady** viscous flow over a flat plate which leads to the development of a boundary layer near the plate surface.The computational domain is taken as $$[0, 1.5] \times [0, 0.25]$$. There is an initial inlet portion of the domain of length 0.5 units on which slip boundary condition is imposed, followed by the no-slip boundary corresponding to the flat plate of length 1 unit. Adiabatic conditions are used on the flat plate boundary, with the Reynolds number corresponding to the plate length being $$10^5$$. The free-stream values used for the simulations are $$p_\infty = 8610$$, $$T_\infty = 300$$, $$v_{x,\infty} = 34.7189$$, $$v_{y,\infty} = 0$$, with the Prandtl number $$0.72$$ and gas constant $$R=287$$. The flow is initialized using the free-stream values, which has a Mach number of 0.1.
+This problem corresponds to a **steady** viscous flow over a flat plate which leads to the development of a boundary layer near the plate surface.The computational domain is taken as ![domflat](https://latex.codecogs.com/gif.latex?%5B0%2C%201.5%5D%20%5Ctimes%20%5B0%2C%200.25%5D). There is an initial inlet portion of the domain of length 0.5 units on which slip boundary condition is imposed, followed by the no-slip boundary corresponding to the flat plate of length 1 unit. Adiabatic conditions are used on the flat plate boundary, with the Reynolds number corresponding to the plate length being 1.0e5. The free-stream values used for the simulations are ![flatic](https://latex.codecogs.com/gif.latex?p_%5Cinfty%20%3D%208610%24%24%2C%20_%5Cinfty%20%3D%20300%2C%20v_%7Bx%2C%5Cinfty%7D%20%3D%2034.7189%24%24%2C%20v_%7By%2C%5Cinfty%7D%20%3D%200), with the Prandtl number 0.72 and gas constant R=287. The flow is initialized using the free-stream values, which has a Mach number of 0.1.
 
-The approximated velocity profiles are compared with the Blasius semi-analytical solution in the standard non-dimensional units. These results are taken on the vertical line through the point on the plate, at a distance $$x=0.8$$ from the plate tip. The velocity profiles can be extracted using
+The approximated velocity profiles are compared with the Blasius semi-analytical solution in the standard non-dimensional units. These results are taken on the vertical line through the point on the plate, at a distance x=0.8 from the plate tip. The velocity profiles can be extracted using
 
 ~~~sh
 visit -cli -s line_extract.py SAMPLE_0
@@ -809,7 +809,7 @@ which will save the data in the file `SAMPLE_0/line_data.dat`. The velocity prof
 ./plot_velocity_profile.py SAMPLE_0/line_data.dat
 ~~~
 
-We show these plots in Figure 7, where $$Re_x$$ is the Reynolds number corresponding to the plate length at $$x=0.8$$, while $$\psi = y \sqrt{0.5 Re_x}/x$$ is the non-dimensionalized vertical distance from the plate at $$x=0.8$$. $$U_\infty$$ is the free-stream x-velocity.
+We show these plots in Figure 7, where ![rex])(https://latex.codecogs.com/gif.latex?Re_x) is the Reynolds number corresponding to the plate length at x=0.8, while ![psi](https://latex.codecogs.com/gif.latex?%5Cpsi%20%3D%20y%20%5Csqrt%7B0.5%20Re_x%7D/x) is the non-dimensionalized vertical distance from the plate at x=0.8. ![uinf](https://latex.codecogs.com/gif.latex?U_%5Cinfty) is the free-stream x-velocity.
 
 <figure>
 <p float="center">
@@ -827,14 +827,9 @@ We show these plots in Figure 7, where $$Re_x$$ is the Reynolds number correspon
 
 Consider the [shocktube](#1dsod) problem described earlier. We demonstrate how one can introduced random perturbations to the initial conditions of the form
 
-$$x_c \leftarrow x_c(1 + \delta(\omega_1 - 0.5)),\\
-T_L \leftarrow T_L(1 + \delta(\omega_2 - 0.5)),\\
-T_R \leftarrow T_R(1 + \delta(\omega_3 - 0.5)),\\
-v_{x,L} \leftarrow v_{x,L}(1 + \delta(\omega_4 - 0.5)),\\
-p_L \leftarrow p_L(1 + \delta(\omega_5 - 0.5)),\\
-p_R \leftarrow p_R(1 + \delta(\omega_6 - 0.5))$$
+![soduqic](https://latex.codecogs.com/gif.latex?x_c%20%5Cleftarrow%20x_c%281%20&plus;%20%5Cdelta%28%5Comega_1%20-%200.5%29%29%2C%5C%5C%20T_L%20%5Cleftarrow%20T_L%281%20&plus;%20%5Cdelta%28%5Comega_2%20-%200.5%29%29%2C%5C%5C%20T_R%20%5Cleftarrow%20T_R%281%20&plus;%20%5Cdelta%28%5Comega_3%20-%200.5%29%29%2C%5C%5C%20v_%7Bx%2CL%7D%20%5Cleftarrow%20v_%7Bx%2CL%7D%281%20&plus;%20%5Cdelta%28%5Comega_4%20-%200.5%29%29%2C%5C%5C%20p_L%20%5Cleftarrow%20p_L%281%20&plus;%20%5Cdelta%28%5Comega_5%20-%200.5%29%29%2C%5C%5C%20p_R%20%5Cleftarrow%20p_R%281%20&plus;%20%5Cdelta%28%5Comega_6%20-%200.5%29%29)
 
-where $$\omega_i$$ are chosen randomly from the interval $$[0,1]$$, while $$\delta$$ controls the amount of perturbation from the base states. The random numbers are pre-generated for a large number of samples, and saved in the file `urnd_nos.txt` (see description of `param.in` for details on the format). The default `urnd_nos.txt` file available for this example specifies 6 random numbers for sample IDs 0 to 1000. This is specified in `numeric` section of `param.in` in the following way:
+where ![omgi](https://latex.codecogs.com/gif.latex?%5Comega_i) are chosen randomly from the interval [0,1], while ![del](https://latex.codecogs.com/gif.latex?%5Cdelta) controls the amount of perturbation from the base states. The random numbers are pre-generated for a large number of samples, and saved in the file `urnd_nos.txt` (see description of `param.in` for details on the format). The default `urnd_nos.txt` file available for this example specifies 6 random numbers for sample IDs 0 to 1000. This is specified in `numeric` section of `param.in` in the following way:
 
 ~~~text
 sample_list
@@ -854,7 +849,7 @@ rnd_per_sample  6
 Note that the sample IDs mentioned in the `sample_list` must be listed in `urnd_nos.txt`.
 
 
-The random number are introduced using the function `pert(<type>,x,y,<k>`, where `<type>` sets the type of perturbation, `x,y` are the $$(x,y)$$ coordinated scaled to lie in $$[0,1]$$,  and `<k>` is an additional perturbation parameter. 
+The random number are introduced using the function `pert(<type>,x,y,<k>`, where `<type>` sets the type of perturbation, `x,y` are the (x,y) coordinated scaled to lie in [0,1],  and `<k>` is an additional perturbation parameter. 
 
 For the current problem, choose the perturbation function as `pert(4,0,0,k)`, which will simply pick the k-th random number available in `urand_nos.dat` for a given sample. The inital and boundary conditions are set as
 
@@ -903,7 +898,7 @@ boundary
 }
 ~~~
 
-Once the solution for all the samples IDs have been generated, the data along the line $$y=0.02$$ can be extracted using
+Once the solution for all the samples IDs have been generated, the data along the line y=0.02 can be extracted using
 
 ~~~sh
 $ visit -cli -s line_extract <sample_start> <sample_end>
