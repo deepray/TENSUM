@@ -122,7 +122,7 @@ def init_solver(d):
 script, input = argv
 param_map = read_parameter(input)
 
-print "---------------------------------------------------------------------------\n"
+print ("---------------------------------------------------------------------------\n")
 #print " Initiating requested tasks: \n"
 
 # execution of main operations
