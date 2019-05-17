@@ -63,7 +63,7 @@ def gen_and_part_mesh(d):
         exit(' Error: Unknown format of mesh-file "'+fname+'". Only ".geo" or ".msh"'+\
               ' formats allowed.\n')        
     if(nparts > 1):
-        comline = "gmsh -"+ dim  + " -part " + nparts + " " + fname + " > " + grid_gen_log
+        comline = "gmsh -"+ dim  + " -part " + str(nparts) + " " + fname + " > " + grid_gen_log
     else:
         comline = "gmsh -"+ dim + " " + fname + " > " + grid_gen_log    
     print ("  Generating mesh using gmsh from ", fname)
