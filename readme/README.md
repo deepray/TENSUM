@@ -42,6 +42,7 @@ export TENSUM_HOME=<path to TENSUM directory>
 PATH=$PATH:$TENSUM_HOME/py_wrap
 PATH=$PATH:$TENSUM_HOME/grid_gen
 PATH=$PATH:$TENSUM_HOME/src
+export PATH
 ~~~
 
 The following primary exectuable files need to be generated:
