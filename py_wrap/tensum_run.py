@@ -66,8 +66,8 @@ def gen_and_part_mesh(d):
         comline = "gmsh -"+ dim  + " -part " + nparts + " " + fname + " > " + grid_gen_log
     else:
         comline = "gmsh -"+ dim + " " + fname + " > " + grid_gen_log    
-    print "  Generating mesh using gmsh from ", fname
-    print "  --- log output available in", grid_gen_log
+    print ("  Generating mesh using gmsh from ", fname)
+    print ("  --- log output available in", grid_gen_log)
     os.system(comline)
     
     comline = "grid_part -D " + dim + " -I " + mesh_file+ " -P " + nparts+\

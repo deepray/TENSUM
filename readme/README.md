@@ -659,7 +659,7 @@ Since the solver is at present restricted to 2D, set `<vz_fun>` to 0.
 We now describe some of the default test cases available with the solver. A detailed description is available in the Chapters 9 and 10 of the [PhD thesis](http://deepray.github.io/thesis.pdf), and the published [inviscid](http://dx.doi.org/10.4208/cicp.scpde14.43s) and [viscous](http://www.sciencedirect.com/science/article/pii/S009630031730471X) flow papers. In all examples, we generate the mesh and run the solver using
 
 ~~~sh
-$ tensum_run input.param
+$ tensum_run.py input.param
 ~~~
 
 ### <a name="1dsod"></a>One-dimensional shocktube problem (examples/Euler/shock_tube)
