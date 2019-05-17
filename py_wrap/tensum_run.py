@@ -49,7 +49,7 @@ def read_parameter(input):
 
 def gen_and_part_mesh(d):
     fname = rs(d['mesh_file_name'])
-    nparts = rs(d['mesh_parts'])
+    nparts = int(rs(d['mesh_parts']))
     dim = rs(d['mesh_dimension'])
     part_dir_loc = rs(d['partition_dir_loc'])
     grid_gen_log = "grid_gen.log"
