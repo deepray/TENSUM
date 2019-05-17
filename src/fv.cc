@@ -17,7 +17,7 @@ extern std::vector<double> rnd_nos;
 
 using namespace std;
 
-bool check_for_stop_file ();  /*!<Checks for a stop file. If present then simulation ends.*/
+// check_for_stop_file ();  /*!<Checks for a stop file. If present then simulation ends.*/
 
 //------------------------------------------------------------------------------
 // Pre MC run intializations
