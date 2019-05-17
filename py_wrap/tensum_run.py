@@ -70,7 +70,7 @@ def gen_and_part_mesh(d):
     print ("  --- log output available in", grid_gen_log)
     os.system(comline)
     
-    comline = "grid_part -D " + dim + " -I " + mesh_file+ " -P " + nparts+\
+    comline = "grid_part -D " + dim + " -I " + mesh_file+ " -P " + str(nparts)+\
               " -L " + part_dir_loc 
     #print "  --- Partitioning mesh into ", nparts, " parts\n\n"
     os.system(comline)
