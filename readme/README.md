@@ -35,13 +35,28 @@
 </ul>
 
 ## <a name="compiling"></a>Compiling the code 
-After cloning the git repository into your local system, you need to set the following paths/variables in your .bashrc file
+After cloning the git repository into your local system, you need build the executables using Cmake (version 2.8.9 or higher). Go to the main TEnSUM folder (which contains `CMakeLists.txt`) and execute the following lines of code 
+
+~~~sh
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make
+~~~
+
+NOTE: Since the code makes use of MPI, you need to ensure that MPICH (**recommended**) or OPENMPI is installed on your system.
+
+Cmake will create two targets in the `build` directory:
+
+1. `grid_part` in the directory grid_gen. This is used to read the mesh file and create paritioned mesh components, which are required by the main solver. 
+2. `tensum` in the directory src. This executes the main finite volume solver.
+
+Once the target have been successfully created, add the following paths/variables in your `.bashrc` or `.bash_profile` file
 
 ~~~sh
 export TENSUM_HOME=<path to TENSUM directory>
 PATH=$PATH:$TENSUM_HOME/py_wrap
-PATH=$PATH:$TENSUM_HOME/grid_gen
-PATH=$PATH:$TENSUM_HOME/src
+PATH=$PATH:$TENSUM_HOME/build
 export PATH
 ~~~
 
@@ -49,8 +64,6 @@ The following primary exectuable files need to be generated:
 
 1. `grid_part` in the directory grid_gen. This is used to read the mesh file and create paritioned mesh components, which are required by the main solver. 
 2. `tensum` in the directory src. This executes the main finite volume solver.
-
-To generate the above executables at once, use the `make` command from the TENSUM home folder. Alternatively, you can go to the individual sub-directories and use `make`. To clear the executables and object files, use `make clean`.   
 
 The unstructured meshes are generated using [Gmsh](http://gmsh.info/), which is an open-source finite element grid generator with a built-in CAD engine, and equipped with several important post-processing tools. You need to install Gmsh and ensure that you are able to access gmsh from the terminal window. In other word
 

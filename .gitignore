@@ -12,4 +12,6 @@ examples/**/**/VARIANCE_*/
 examples/**/**/SECOND_MOMENT_*/
 examples/**/**/mesh_part_info.dat
 examples/**/**/*.png
+ARCH
+build
 

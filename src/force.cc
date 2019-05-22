@@ -12,9 +12,7 @@ extern bool verbose;
 void FiniteVolume::create_force_face_list ()
 {
    if(param.force_data.size() == 0)
-      return;
-      
-   cout<<NPART<<endl;   
+      return; 
 
    MPI_DISP("\n  Creating list of faces for force computation",verbose);   
 
@@ -211,11 +209,11 @@ void FiniteVolume::compute_forces (unsigned long int iter)
 		  force_file << inv_force_x << "  " 
 					 << inv_force_y << "  "
 					 << visc_force_x << "  " 
-					 << visc_force_y << "  " ;
+					 << visc_force_y << endl ;
       }           
    }
-   if(check_group_base())
-      force_file << endl;
+   // if(check_group_base())
+//       force_file << endl;
    
    t_force_eval.add_time();
 }
