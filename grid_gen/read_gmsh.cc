@@ -181,11 +181,12 @@ void Grid<DIM>::read_gmsh ()
    vector<vector<int> >::iterator itvv1;
    vector<int>::iterator itv1;
    periodic_set_part_list.resize(periodic_node_sets.size());
-   for(int i=0;i<NPART;++i)
+   for(int i=0;SafeLess(i,NPART);++i)
       part_periodic_set.insert(pair<int,int>(i,0));
-   
-   
-   for(int i=0; i<periodic_node_sets.size();++i)
+
+
+   //for(int i=0; i<periodic_node_sets.size();++i)
+   for(int i=0; SafeLess(i,periodic_node_sets.size());++i)
    {
       for(itv1 = periodic_node_sets[i].begin();itv1 != periodic_node_sets[i].end();++itv1)
       {
@@ -197,7 +198,8 @@ void Grid<DIM>::read_gmsh ()
 			periodic_set_part_list[i].insert(*it);
 		 }
       }
-      for(int j=0;j<NPART;++j)
+    //for(int j=0;j<NPART;++j)
+      for(int j=0;SafeLess(j,NPART);++j)
          if(periodic_set_part_list[i].count(j)!=0)
             part_periodic_set.find(j)->second++;
    }      

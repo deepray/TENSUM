@@ -136,7 +136,7 @@ void Grid<DIM>::gmsh_split ()
          map<int, vector<int> >::iterator itm1;
          vector<vector<int> >::iterator itvv1;
 	     vector<int>::iterator itv1;
-         for(unsigned int p=0; p<p_elem; ++p)
+         for(unsigned int p=0; SafeLess(p,p_elem); ++p)
          {
             file >> e_dim >> master >> slave;
             if(DIM == 3)
@@ -157,7 +157,8 @@ void Grid<DIM>::gmsh_split ()
 	  
 	  
             }
-            else if(e_dim == geo_type[0])  
+            //else if(e_dim == geo_type[0])
+            else if(SafeEq(e_dim = geo_type[0]))
             {
                periodic_face_tag.push_back(master);
                periodic_face_tag.push_back(slave);

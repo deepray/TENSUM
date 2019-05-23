@@ -17,7 +17,7 @@ void Grid<DIM>::create_partition_files ()
     cout<<"  --- writing final partition files into "<<part_dir<<"... "<<endl;
     // const int n_part = partitions.size();
 	vector<ofstream*> p_file (NPART);
-	for(int i=0; i<NPART; ++i)
+	for(int i=0; SafeLess(i,NPART); ++i)
 	{
 	   stringstream ss;
 	   ss << i;
@@ -183,7 +183,7 @@ void Grid<DIM>::create_partition_files ()
 	   system(commandline.c_str());       
     }  
     
-    for(int i=0; i<NPART; ++i)
+    for(int i=0; SafeLess(i,NPART); ++i)
     {
        p_file[i]->close();
     }

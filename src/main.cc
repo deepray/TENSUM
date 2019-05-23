@@ -50,7 +50,7 @@ int main(int argc, char* argv[])
    int ifile, iloc;
    process_command_line (argc, argv, ifile, iloc, NPART);
    PERIODIC = false; // Default
-   
+
    if(get_comm_size() % NPART !=0)
       MPI_ERR("The number of mesh partitions must divide the number of processors called "
               <<"by mpi EXACTLY!! Please change this and re-run the code.")

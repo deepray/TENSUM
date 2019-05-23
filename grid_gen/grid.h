@@ -8,7 +8,7 @@
 #include <iostream>
 #include <cassert>
 #include "vec.h"
-#define NDIR 3
+#include "safe_logic.h"
 
 //extern bool periodic;
 

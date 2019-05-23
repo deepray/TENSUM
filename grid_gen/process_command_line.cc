@@ -71,7 +71,7 @@ void process_command_line (int   argc,
       ++i;
    }
 
-   if ( (!found_file || !found_dim || !found_loc) ||
+   if ( (!found_file || !found_dim || !found_loc || !found_npart) ||
         (DIM != 2 && DIM !=3) ||
         NPART < 1
       )  
