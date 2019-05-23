@@ -158,7 +158,7 @@ void Grid<DIM>::gmsh_split ()
 	  
             }
             //else if(e_dim == geo_type[0])
-            else if(SafeEq(e_dim = geo_type[0]))
+            else if(SafeEq(e_dim,geo_type[0]))
             {
                periodic_face_tag.push_back(master);
                periodic_face_tag.push_back(slave);
